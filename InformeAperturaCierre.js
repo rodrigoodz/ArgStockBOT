@@ -8,9 +8,7 @@ const bot = new TelegramBot(token);
 
 const informeApertura = (chats, apertura) => {
   if (chats.length > 0) {
-    //le manda un mensaje a todos los grupos guardados, cambiarlo... es solo para probar
     chats.forEach((grupo) => {
-      //si apertura es 1 es porque el mercado esta por abrir, sino esta por cerrar
       if (apertura === 1) {
         bot.sendMessage(
           grupo.id,
