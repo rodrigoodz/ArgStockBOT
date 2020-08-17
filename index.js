@@ -1,9 +1,11 @@
 // Imports
+require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const config = require("./config/config.json");
 const fs = require("fs");
 
 // node-telegram-bot-api
+
 const token = config.token;
 const bot = new TelegramBot(token, { polling: true });
 
