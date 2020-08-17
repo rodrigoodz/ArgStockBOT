@@ -2,7 +2,7 @@
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const config = require("./config/config.json");
-const fs = require("fs");
+const { informeApertura } = require("./InformeAperturaCierre");
 
 // node-telegram-bot-api
 const token = config.token;
@@ -10,12 +10,11 @@ const bot = new TelegramBot(token, { polling: true });
 
 //db
 let chats = [];
-console.log(chats);
 
 //bot_id
 const bot_id = config.bot_id;
 
-//comando /start
+//comando /start (funciona en grupos y mp)
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -27,6 +26,7 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
+//si el bot es agrego a un grupo
 bot.on("new_chat_members", (msg) => {
   //verifico si el id del "nuevo miembro" coincide con el del bot
   const { id: userID } = msg.new_chat_member;
@@ -34,14 +34,12 @@ bot.on("new_chat_members", (msg) => {
   if (userID === bot_id) {
     console.log("Te agregaron al grupo -> " + GroupTITLE);
     //si fue agregado el bot, guardo el id del grupo
-    bot.sendMessage(GroupID, "Gracias por la invitacion");
     chats.push({ title: GroupTITLE, id: GroupID });
-    console.log(chats);
   }
 });
 
+//si el bot abandono (es eliminado) de un grupo
 bot.on("left_chat_member", (msg) => {
-  //verifico si el id del "miembro que se ha ido" coincide con el del bot
   const { id } = msg.left_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
   if (id === bot_id) {
@@ -52,3 +50,22 @@ bot.on("left_chat_member", (msg) => {
   });
   console.log(chats);
 });
+
+//info si ocurre algun tipo de error
+// bot.on("polling_error", (err) => console.log(err));
+
+//cada 1 minuto, consulta si el mercado esta por abrir o cerrar
+//TODO buscar una forma mas eficiente de realizar esto
+setInterval(function () {
+  console.log(chats);
+  let date = new Date();
+  //si no es sabado o domingo
+  if (date.getDay() !== 0 && date.getDay() !== 7) {
+    if (date.getHours() === 13 && date.getMinutes() === 02) {
+      informeApertura(chats, 1);
+    }
+    if (date.getHours() === 17 && date.getMinutes() === 55) {
+      informeApertura(chats, 0);
+    }
+  }
+}, 60000);
