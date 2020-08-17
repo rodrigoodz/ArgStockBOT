@@ -29,7 +29,7 @@ bot.onText(/\/start/, (msg) => {
 });
 
 //TODO agregar comando que permita ver la lista de todos los tickers
-bot.onText(/\.tickers/, (msg) => {
+bot.onText(/\/tickers/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
     `<b>Tickers Argentinos[BULLMARKET]</b>
@@ -61,9 +61,17 @@ bot.onText(/\.tickers/, (msg) => {
   );
 });
 
-bot.onText(/\.ticket/, async (msg) => {
-  let precio = await obtenerCotizacion("YPFD.BA");
+bot.onText(/\/ticker (.+)/, async (msg, match) => {
+  const ticker = match[1];
+  const precio = await obtenerCotizacion(ticker);
   console.log("PRECIOOO: ", precio);
+  bot.sendMessage(
+    msg.chat.id,
+    `<b>El precio de ${ticker} es de ${precio}$</b>`,
+    {
+      parse_mode: "HTML",
+    }
+  );
 });
 
 //TODO llamar a controladorTickers y retornar el precio actual
