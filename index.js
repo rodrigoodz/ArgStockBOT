@@ -6,14 +6,14 @@ const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
 
 // node-telegram-bot-api
-const token = config.token;
+const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 //db
 let chats = [];
 
 //bot_id
-const bot_id = config.bot_id;
+const bot_id = process.env.BOT_ID;
 
 //comando /start (funciona en grupos y mp)
 bot.onText(/\/start/, (msg) => {
