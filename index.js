@@ -32,27 +32,47 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/tickers/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `<b>Tickers Argentinos[BULLMARKET]</b>
-<pre>.ALUA - Aluminio Argentino SA
-.BBAR - BBVA Banco Francés S.A.
-.BMA - Banco Macro S.A.
-.BYMA - Bolsas y Mercados Argentinos S.A.
-.CEPU - Central Puerto S.A. 
-.COME - Sociedad Comercial del Plata S.A.
-.CRES - Cresud S.A.
-.CVH - CABLEVISIÓN HOLDING S.A.
-.EDN - EDENOR
-.GGAL - Grupo Financiero Galicia
-.MIRG - Mirgor SACIFIA
-.PAMP - Pampa Energía
-.SUPV - Grupo Supervielle SA
-.TECO2 - TELECOM ARGENTINA SA
-.TGNO4 - Transportadora de Gas del Norte S.A.
-.TGSU2 - Transportadora de Gas del Sur
-.TRAN - Transener
-.TXAR - Ternium Argentina SA
-.VALO - GRUPO FINANCIERO VALORES S.A.
-.YPFD - YPF S.A.
+    `<b>Tickers Argentinos</b>
+<pre>
+ALUA - Aluminio Argentino SA
+
+BBAR - BBVA Banco Francés SA
+
+BMA - Banco Macro SA
+
+BYMA - Bolsas y Mercados Argentinos SA
+
+CEPU - Central Puerto SA 
+
+COME - Sociedad Comercial del Plata SA
+
+CRES - Cresud SA
+
+CVH - CABLEVISIÓN HOLDING SA
+
+EDN - EDENOR
+
+GGAL - Grupo Financiero Galicia
+
+MIRG - Mirgor SACIFIA
+
+PAMP - Pampa Energía
+
+SUPV - Grupo Supervielle SA
+
+TECO2 - TELECOM ARGENTINA SA
+
+TGNO4 - Transportadora de Gas del Norte SA
+
+TGSU2 - Transportadora de Gas del Sur
+
+TRAN - Transener
+
+TXAR - Ternium Argentina SA
+
+VALO - GRUPO FINANCIERO VALORES SA
+
+YPFD - YPF SA
 </pre>
   `,
     {
@@ -65,13 +85,19 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   const ticker = match[1];
   const accion = await obtenerCotizacion(ticker);
   // console.log(accion);
-  bot.sendMessage(
-    msg.chat.id,
-    `<b>El precio actual de ${accion.simbolo} es de ${accion.precio} ${accion.moneda}</b>`,
-    {
+  if (typeof accion === "string") {
+    bot.sendMessage(msg.chat.id, `${accion}`, {
       parse_mode: "HTML",
-    }
-  );
+    });
+  } else {
+    bot.sendMessage(
+      msg.chat.id,
+      `<b>El precio actual de ${accion.simbolo} es de ${accion.precio} ${accion.moneda}</b>`,
+      {
+        parse_mode: "HTML",
+      }
+    );
+  }
 });
 
 //TODO llamar a controladorTickers y retornar el precio actual
