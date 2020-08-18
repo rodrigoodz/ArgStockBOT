@@ -35,7 +35,7 @@ bot.onText(/\/tickers/, (msg) => {
 <pre>
 ALUA - Aluminio Argentino SA
 
-BBAR - BBVA Banco Francés SA
+BBAR - Banco Francés SA
 
 BMA - Banco Macro SA
 
@@ -47,19 +47,19 @@ COME - Sociedad Comercial del Plata SA
 
 CRES - Cresud SA
 
-CVH - CABLEVISIÓN HOLDING SA
+CVH - Cablevision Holding SA
 
-EDN - EDENOR
+EDN - Edenor
 
 GGAL - Grupo Financiero Galicia
 
-MIRG - Mirgor SACIFIA
+MIRG - Mirgor
 
 PAMP - Pampa Energía
 
 SUPV - Grupo Supervielle SA
 
-TECO2 - TELECOM ARGENTINA SA
+TECO2 - Telecom Argentina SA
 
 TGNO4 - Transportadora de Gas del Norte SA
 
@@ -69,7 +69,7 @@ TRAN - Transener
 
 TXAR - Ternium Argentina SA
 
-VALO - GRUPO FINANCIERO VALORES SA
+VALO - Grupo Financiero Valores SA
 
 YPFD - YPF SA
 </pre>
