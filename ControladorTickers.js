@@ -2,8 +2,7 @@
 const si = require("stock-info");
 
 const obtenerCotizacion = (ticker) => {
-  //recibe un ticker por ejemplo:[ypfd], y tiene que emparejarlo con el ticker que utiliza yahoo [ypfd.ba]
-
+  //recibe un ticker por ejemplo:[ypfd], y tiene que emparejarlo con el ticker que utiliza Yahoo Finance API -> [ypfd.ba]
   const ticker_argentino = 1;
   //TODO estoy asumiendo que todos los tickers ingresados son argentinos, podria expandirlo a mas paises...
   if (ticker_argentino === 1) {
@@ -17,7 +16,6 @@ const obtenerCotizacion = (ticker) => {
           nombre: data.longName,
           moneda: data.currency,
         };
-        // return data.regularMarketPrice;
       })
       .catch((err) => {
         // console.log(err);

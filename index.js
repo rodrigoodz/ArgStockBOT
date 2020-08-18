@@ -1,6 +1,5 @@
 // Imports
 require("dotenv").config();
-
 const config = require("./config/config.json");
 const TelegramBot = require("node-telegram-bot-api");
 const { informeApertura } = require("./InformeAperturaCierre");
@@ -28,7 +27,7 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
-//TODO agregar comando que permita ver la lista de todos los tickers
+//comando /tickers para ver los tickers argentinos para consultar su cotizacion
 bot.onText(/\/tickers/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -81,6 +80,7 @@ YPFD - YPF SA
   );
 });
 
+//comando /ticker (ticker_accion) para ver la cotizacion actual de un ticker particular
 bot.onText(/\/ticker (.+)/, async (msg, match) => {
   const ticker = match[1];
   const accion = await obtenerCotizacion(ticker);
@@ -100,9 +100,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
 });
 
-//TODO llamar a controladorTickers y retornar el precio actual
-
-//si el bot se agrego a un grupo
+//si el bot es agregado a un grupo -> guardar un registro del chat (id y titulo del grupo)
 bot.on("new_chat_members", (msg) => {
   //verifico si el id del "nuevo miembro" coincide con el del bot
   const { id: userID } = msg.new_chat_member;
@@ -114,7 +112,7 @@ bot.on("new_chat_members", (msg) => {
   }
 });
 
-//si el bot abandono (es eliminado) de un grupo
+//si el bot se ha ido de un grupo -> borrar el registro de ese grupo
 bot.on("left_chat_member", (msg) => {
   const { id } = msg.left_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
@@ -131,7 +129,6 @@ bot.on("left_chat_member", (msg) => {
 bot.on("polling_error", (err) => console.log(err));
 
 //cada 1 minuto, consulta si el mercado esta por abrir o cerrar
-//TODO buscar una forma mas eficiente de realizar esto
 setInterval(function () {
   console.log("Chats  -> ", chats);
   let date = new Date();
@@ -146,6 +143,5 @@ setInterval(function () {
   }
 }, 60000); //60000
 
-//TODO buscar alguna API para obtener cotizacion en tiempo real
 //TODO crear un archivo .json para manejar los registro de chats, o usar firebase
 //TODO podria hacer que al llamar a .ticker img, mande grafico de la accion
