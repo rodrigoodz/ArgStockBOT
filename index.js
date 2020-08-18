@@ -1,6 +1,5 @@
 // Imports
 require("dotenv").config();
-const config = require("./config/config.json");
 const TelegramBot = require("node-telegram-bot-api");
 const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");

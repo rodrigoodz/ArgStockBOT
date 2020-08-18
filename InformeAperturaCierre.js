@@ -1,9 +1,8 @@
 // Imports
 const TelegramBot = require("node-telegram-bot-api");
-const config = require("./config/config.json");
 
 // node-telegram-bot-api
-const token = config.token;
+const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token);
 
 const informeApertura = (chats, apertura) => {
