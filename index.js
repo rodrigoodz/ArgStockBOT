@@ -63,11 +63,11 @@ bot.onText(/\/tickers/, (msg) => {
 
 bot.onText(/\/ticker (.+)/, async (msg, match) => {
   const ticker = match[1];
-  const precio = await obtenerCotizacion(ticker);
-  console.log("PRECIOOO: ", precio);
+  const accion = await obtenerCotizacion(ticker);
+  // console.log(accion);
   bot.sendMessage(
     msg.chat.id,
-    `<b>El precio de ${ticker} es de ${precio}$</b>`,
+    `<b>El precio actual de ${accion.simbolo} es de ${accion.precio} ${accion.moneda}</b>`,
     {
       parse_mode: "HTML",
     }
