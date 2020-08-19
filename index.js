@@ -3,19 +3,23 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
+const { getListado, agregar, borrar } = require("./ControladorRegistroChats");
 
 // node-telegram-bot-api
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
-
-//db
-let chats = [];
 
 //bot_id
 const bot_id = process.env.BOT_ID;
 
 //comando /start (funciona en grupos y mp)
 bot.onText(/\/start/, (msg) => {
+  if (msg.chat.type === "private") {
+    console.log(`${msg.from.username} escribio el comando /start en privado`);
+  } else {
+    console.log(`${msg.from.username} escribio el comando /start en un grupo`);
+  }
+  //------------
   bot.sendMessage(
     msg.chat.id,
     `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores
@@ -84,11 +88,13 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   const ticker = match[1];
   const accion = await obtenerCotizacion(ticker);
   // console.log(accion);
+  //si accion es un string (con el error)
   if (typeof accion === "string") {
     bot.sendMessage(msg.chat.id, `${accion}`, {
       parse_mode: "HTML",
     });
   } else {
+    //si accion es un objeto
     bot.sendMessage(
       msg.chat.id,
       `<b>El precio actual de ${accion.simbolo} es de ${accion.precio} ${accion.moneda}</b>`,
@@ -102,26 +108,25 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
 //si el bot es agregado a un grupo -> guardar un registro del chat (id y titulo del grupo)
 bot.on("new_chat_members", (msg) => {
   //verifico si el id del "nuevo miembro" coincide con el del bot
-  const { id: userID } = msg.new_chat_member;
+  let { id: userID } = msg.new_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
-  if (userID === bot_id) {
+  if (String(userID) === bot_id) {
     console.log("Te agregaron al grupo -> " + GroupTITLE);
-    //si fue agregado el bot, guardo el id del grupo
-    chats.push({ title: GroupTITLE, id: GroupID });
+    //manejo db
+    const chats = getListado();
+    const guardo = agregar(GroupID, GroupTITLE);
   }
 });
 
 //si el bot se ha ido de un grupo -> borrar el registro de ese grupo
 bot.on("left_chat_member", (msg) => {
-  const { id } = msg.left_chat_member;
+  const { id: userID } = msg.left_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
-  if (id === bot_id) {
+  if (String(userID) === bot_id) {
     console.log("Te fuiste del grupo -> " + GroupTITLE);
+    //manejo db
+    const borro = borrar(GroupID);
   }
-  chats = chats.filter((chat) => {
-    return chat.id !== GroupID;
-  });
-  console.log(chats);
 });
 
 //info si ocurre algun tipo de error
@@ -129,7 +134,7 @@ bot.on("polling_error", (err) => console.log(err));
 
 //cada 1 minuto, consulta si el mercado esta por abrir o cerrar
 setInterval(function () {
-  console.log("Chats  -> ", chats);
+  // console.log("Chats  -> ", chats);
   let date = new Date();
   //si no es sabado o domingo
   if (date.getDay() !== 0 && date.getDay() !== 6) {
@@ -142,5 +147,6 @@ setInterval(function () {
   }
 }, 60000); //60000
 
-//TODO crear un archivo .json para manejar los registro de chats, o usar firebase
 //TODO podria hacer que al llamar a .ticker img, mande grafico de la accion
+//TODO al tener un registro de chats en data.json , puedo usar esos chats para informar la apertura y cierre (grupos que contengan al bot)
+//TODO estoy asumiendo que todos los tickers ingresados son argentinos, podria expandirlo a mas paises...
