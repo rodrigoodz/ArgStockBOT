@@ -134,19 +134,17 @@ bot.on("polling_error", (err) => console.log(err));
 
 //cada 1 minuto, consulta si el mercado esta por abrir o cerrar
 setInterval(function () {
-  // console.log("Chats  -> ", chats);
   let date = new Date();
   //si no es sabado o domingo
   if (date.getDay() !== 0 && date.getDay() !== 6) {
     if (date.getHours() === 10 && date.getMinutes() === 55) {
-      informeApertura(chats, 1);
+      informeApertura(1);
     }
     if (date.getHours() === 17 && date.getMinutes() === 55) {
-      informeApertura(chats, 0);
+      informeApertura(0);
     }
   }
 }, 60000); //60000
 
 //TODO podria hacer que al llamar a .ticker img, mande grafico de la accion
-//TODO al tener un registro de chats en data.json , puedo usar esos chats para informar la apertura y cierre (grupos que contengan al bot)
 //TODO estoy asumiendo que todos los tickers ingresados son argentinos, podria expandirlo a mas paises...
