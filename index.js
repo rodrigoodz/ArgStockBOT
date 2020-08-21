@@ -16,9 +16,9 @@ const bot_id = process.env.BOT_ID;
 //para tener un control en consola de los mensajes
 bot.on("message", (msg) => {
   if (msg.chat.type === "private") {
-    console.log(`${msg.from.username} te escribio en privado`);
+    console.log(`${msg.from.username} te escribio en privado ${msg.text}`);
   } else {
-    console.log(`${msg.from.username} te escribio en un grupo`);
+    console.log(`${msg.from.username} te escribio en un grupo ${msg.text}`);
   }
 });
 
@@ -182,7 +182,9 @@ bot.on("new_chat_members", (msg) => {
   let { id: userID } = msg.new_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
   if (String(userID) === bot_id) {
-    console.log("Te agregaron al grupo -> " + GroupTITLE);
+    console.log(
+      `Agregaron al bot al grupo [${GroupTITLE}] con id [${GroupID}]`
+    );
     //manejo db
     const chats = getListado();
     const guardo = agregar(GroupID, GroupTITLE);
@@ -194,7 +196,9 @@ bot.on("left_chat_member", (msg) => {
   const { id: userID } = msg.left_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
   if (String(userID) === bot_id) {
-    console.log("Te fuiste del grupo -> " + GroupTITLE);
+    console.log(
+      `Quitaron al bot del grupo [${GroupTITLE}] con id [${GroupID}]`
+    );
     //manejo db
     const borro = borrar(GroupID);
   }
