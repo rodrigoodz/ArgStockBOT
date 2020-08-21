@@ -1,6 +1,4 @@
-## Titulo del Proyecto
-
-**ArgStockBot**
+## ArgStockBot
 
 <hr>
 
@@ -11,9 +9,18 @@ Bot realizado en NodeJS utilizando los modulos:
 [dotenv](https://www.npmjs.com/package/dotenv)
 <br>
 [stock-info](https://www.npmjs.com/package/stock-info)
+<br>
+[fs-filesystem](https://www.npmjs.com/package/fs-filesystem)
 
 ### Comandos
+
+**/start**
+
+**/comandos**
 
 **/tickers** ->muestra una lista todos los tickers argentinos que pueden ser consultados
 
 **/ticker (ticker_argentino)** -> consultar un ticker particular del mercado argentino
+
+Contactar <br>
+[@ArgStockBOT](https://telegram.me/ArgStockBot)
