@@ -36,7 +36,7 @@ bot.onText(/\/start/, (msg) => {
 });
 
 //ver la lista de comandos disponibles
-bot.onText(/\/comandos/, async (msg, match) => {
+bot.onText(/\/comandos/, async (msg) => {
   bot.sendMessage(
     msg.chat.id,
     `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
@@ -119,6 +119,15 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       }
     );
   }
+});
+
+bot.onText(/\/ticker/, async (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `Recuerda utilizar el comando <pre>/ticker (ticker_argentino)
+Ejemplo: /ticker ypfd</pre>`,
+    { parse_mode: "HTML" }
+  );
 });
 
 //comando /about para ver informacion acerca del bot
