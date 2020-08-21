@@ -40,7 +40,8 @@ bot.onText(/\/comandos/, async (msg, match) => {
   bot.sendMessage(
     msg.chat.id,
     `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
-<b>/ticker (ticker_argentino)</b> -> consultar un ticker particular del mercado argentino`,
+<b>/ticker (ticker_argentino)</b> -> consultar un ticker particular del mercado argentino
+<b>/about</b> -> informacion`,
     { parse_mode: "HTML" }
   );
 });
@@ -118,6 +119,17 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       }
     );
   }
+});
+
+//comando /about para ver informacion acerca del bot
+bot.onText(/\/about/, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `Bot desarrollado por @orra6 - Contacto: rodrigoodz@gmail.com`,
+    {
+      parse_mode: "HTML",
+    }
+  );
 });
 
 //si el bot es agregado a un grupo -> guardar un registro del chat (id y titulo del grupo)
