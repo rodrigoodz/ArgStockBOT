@@ -142,8 +142,8 @@ Ejemplo: /ticker ypfd</pre>`,
 bot.onText(/\/dolar/, (msg) => {
   Bluelytics.get().then((result) => {
     const { oficial, blue, last_update } = result;
-    const [anio, mes, dia] = last_update.trim().split("T")[0].trim().split("-");
-    const [hora, min, seg] = last_update
+    const [, mes, dia] = last_update.trim().split("T")[0].trim().split("-");
+    const [hora, min] = last_update
       .trim()
       .split("T")[1]
       .trim()
