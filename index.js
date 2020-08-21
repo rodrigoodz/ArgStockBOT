@@ -22,10 +22,21 @@ bot.onText(/\/start/, (msg) => {
   //------------
   bot.sendMessage(
     msg.chat.id,
-    `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores
+    `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver los comandos disponibles,escriba <b>/comandos</b>
     <pre>Funciones:
--Informa apertura y cierre de la bolsa de valores
--Comando .{ticker} para solicitar la cotizacion de un accion particular</pre>`,
+-Al ser agregado a un grupo, este informa el cierre y apertura del mercado argentino
+-Ver la lista de todas las acciones argentinas
+-Consultar la cotizacion de un accion argentina de forma particular</pre>
+`,
+    { parse_mode: "HTML" }
+  );
+});
+
+bot.onText(/\/comandos/, async (msg, match) => {
+  bot.sendMessage(
+    msg.chat.id,
+    `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
+<b>/ticker (ticker_argentino)</b> -> consultar un ticker particular del mercado argentino`,
     { parse_mode: "HTML" }
   );
 });
