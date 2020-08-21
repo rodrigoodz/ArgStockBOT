@@ -141,13 +141,22 @@ Ejemplo: /ticker ypfd</pre>`,
 //comando /dolar
 bot.onText(/\/dolar/, (msg) => {
   Bluelytics.get().then((result) => {
-    const { oficial, blue } = result;
+    const { oficial, blue, last_update } = result;
+    const [anio, mes, dia] = last_update.trim().split("T")[0].trim().split("-");
+    const [hora, min, seg] = last_update
+      .trim()
+      .split("T")[1]
+      .trim()
+      .split(".")[0]
+      .trim()
+      .split(":");
     bot.sendMessage(
       msg.chat.id,
       `<b>[Oficial]</b> 
 Venta: ${oficial.value_sell} ARS // Compra: ${oficial.value_buy} ARS
 <b>[Blue]</b>
 Venta: ${blue.value_sell} ARS // Compra: ${blue.value_buy} ARS
+<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
 `,
       {
         parse_mode: "HTML",
