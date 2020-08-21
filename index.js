@@ -1,6 +1,7 @@
 // Imports
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
+const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
 const { getListado, agregar, borrar } = require("./ControladorRegistroChats");
@@ -29,7 +30,8 @@ bot.onText(/\/start/, (msg) => {
     <pre>Funciones:
 -Al ser agregado a un grupo, este informa el cierre y apertura del mercado argentino
 -Ver la lista de todas las acciones argentinas
--Consultar la cotizacion de un accion argentina de forma particular</pre>
+-Consultar la cotizacion de un accion argentina de forma particular
+-Consultar el precio del dolar actual</pre>
 `,
     { parse_mode: "HTML" }
   );
@@ -41,6 +43,7 @@ bot.onText(/\/comandos/, async (msg) => {
     msg.chat.id,
     `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
 <b>/ticker (ticker_argentino)</b> -> consultar un ticker particular del mercado argentino
+<b>/dolar</b> -> obtener precio del dolar (info. de Bluelytics)
 <b>/about</b> -> informacion`,
     { parse_mode: "HTML" }
   );
@@ -127,11 +130,22 @@ bot.onText(/\/ticker/, async (msg, match) => {
   if (comandos_array.length === 1) {
     bot.sendMessage(
       msg.chat.id,
-      `Recuerda utilizar el comando <pre>/ticker (ticker_argentino)
-  Ejemplo: /ticker ypfd</pre>`,
+      `<pre>Recuerda utilizar el comando 
+/ticker (ticker_argentino)
+Ejemplo: /ticker ypfd</pre>`,
       { parse_mode: "HTML" }
     );
   }
+});
+
+//comando /dolar
+bot.onText(/\/dolar/, (msg) => {
+  Bluelytics.get().then((result) => {
+    console.log(result);
+  });
+  bot.sendMessage(msg.chat.id, `dolaruco`, {
+    parse_mode: "HTML",
+  });
 });
 
 //comando /about para ver informacion acerca del bot
