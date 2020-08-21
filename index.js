@@ -121,13 +121,17 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
 });
 
-bot.onText(/\/ticker/, async (msg) => {
-  bot.sendMessage(
-    msg.chat.id,
-    `Recuerda utilizar el comando <pre>/ticker (ticker_argentino)
-Ejemplo: /ticker ypfd</pre>`,
-    { parse_mode: "HTML" }
-  );
+bot.onText(/\/ticker/, async (msg, match) => {
+  //verificar que no escribi /ticker (accion) y solo escribi /ticker
+  const comandos_array = match.input.trim().split(" ");
+  if (comandos_array.length === 1) {
+    bot.sendMessage(
+      msg.chat.id,
+      `Recuerda utilizar el comando <pre>/ticker (ticker_argentino)
+  Ejemplo: /ticker ypfd</pre>`,
+      { parse_mode: "HTML" }
+    );
+  }
 });
 
 //comando /about para ver informacion acerca del bot
