@@ -9,7 +9,6 @@ const obtenerCotizacion = (ticker) => {
     const accion = si
       .getSingleStockInfo(ticker)
       .then((data) => {
-        console.log(data);
         return {
           precio: data.regularMarketPrice,
           nombre: data.longName,

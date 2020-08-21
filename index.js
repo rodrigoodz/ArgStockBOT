@@ -13,12 +13,25 @@ const bot = new TelegramBot(token, { polling: true });
 //bot_id
 const bot_id = process.env.BOT_ID;
 
-//para tener un control en consola de los mensajes
+//para tener un control de los mensajes al bot
 bot.on("message", (msg) => {
+  // if (msg.chat.type === "private") {
+  //   console.log(`${msg.from.username} te escribio en privado ${msg.text}`);
+  // } else {
+  //   console.log(`${msg.from.username} te escribio en un grupo ${msg.text}`);
+  // }
   if (msg.chat.type === "private") {
-    console.log(`${msg.from.username} te escribio en privado ${msg.text}`);
+    bot.sendMessage(
+      process.env.ORRA_ID,
+      `${msg.from.username} escribio en privado ${msg.text}`,
+      { parse_mode: "HTML" }
+    );
   } else {
-    console.log(`${msg.from.username} te escribio en un grupo ${msg.text}`);
+    bot.sendMessage(
+      process.env.ORRA_ID,
+      `${msg.from.username} escribio en un grupo ${msg.text}`,
+      { parse_mode: "HTML" }
+    );
   }
 });
 
