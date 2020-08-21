@@ -12,14 +12,17 @@ const bot = new TelegramBot(token, { polling: true });
 //bot_id
 const bot_id = process.env.BOT_ID;
 
+//para tener un control en consola de los mensajes
+bot.on("message", (msg) => {
+  if (msg.chat.type === "private") {
+    console.log(`${msg.from.username} te escribio en privado`);
+  } else {
+    console.log(`${msg.from.username} te escribio en un grupo`);
+  }
+});
+
 //comando /start (funciona en grupos y mp)
 bot.onText(/\/start/, (msg) => {
-  if (msg.chat.type === "private") {
-    console.log(`${msg.from.username} escribio el comando /start en privado`);
-  } else {
-    console.log(`${msg.from.username} escribio el comando /start en un grupo`);
-  }
-  //------------
   bot.sendMessage(
     msg.chat.id,
     `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver los comandos disponibles,escriba <b>/comandos</b>
@@ -32,6 +35,7 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
+//ver la lista de comandos disponibles
 bot.onText(/\/comandos/, async (msg, match) => {
   bot.sendMessage(
     msg.chat.id,
