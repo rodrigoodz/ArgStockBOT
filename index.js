@@ -141,10 +141,18 @@ Ejemplo: /ticker ypfd</pre>`,
 //comando /dolar
 bot.onText(/\/dolar/, (msg) => {
   Bluelytics.get().then((result) => {
-    console.log(result);
-  });
-  bot.sendMessage(msg.chat.id, `dolaruco`, {
-    parse_mode: "HTML",
+    const { oficial, blue } = result;
+    bot.sendMessage(
+      msg.chat.id,
+      `<b>[Oficial]</b> 
+Venta: ${oficial.value_sell} ARS // Compra: ${oficial.value_buy} ARS
+<b>[Blue]</b>
+Venta: ${blue.value_sell} ARS // Compra: ${blue.value_buy} ARS
+`,
+      {
+        parse_mode: "HTML",
+      }
+    );
   });
 });
 
