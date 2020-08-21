@@ -114,9 +114,30 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     });
   } else {
     //si accion es un objeto
+    //expreso la informacion con un retraso de (accion.delay)
+    let delay_time = new Date().getTime() - accion.delay * 60000; //retrasada 20 minutos generalmente
+    delay_time = new Date(delay_time);
+    const hora_delay = delay_time.getHours();
+    const min_delay =
+      (delay_time.getMinutes() < 10 ? "0" : "") + delay_time.getMinutes();
+
+    //calculo porcentaje de ganancia/perdida
+    let porcentaje_gan_perd = (
+      (accion.cambio_cotizacion * 100) /
+      accion.max_dia
+    ).toFixed(2);
+    if (porcentaje_gan_perd > 0) {
+      porcentaje_gan_perd = "+" + porcentaje_gan_perd;
+    }
+
+    //sendMessage
     bot.sendMessage(
       msg.chat.id,
-      `<b>El precio actual de ${accion.simbolo} es de ${accion.precio} ${accion.moneda}</b>`,
+      `<i>Info de las ${hora_delay}:${min_delay}hs</i>  
+<b>${accion.nombre}</b>
+Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
+Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
+Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`,
       {
         parse_mode: "HTML",
       }

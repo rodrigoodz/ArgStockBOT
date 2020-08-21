@@ -9,11 +9,15 @@ const obtenerCotizacion = (ticker) => {
     const accion = si
       .getSingleStockInfo(ticker)
       .then((data) => {
+        console.log(data);
         return {
           precio: data.regularMarketPrice,
-          simbolo: data.symbol,
           nombre: data.longName,
           moneda: data.currency,
+          delay: data.sourceInterval,
+          max_dia: data.regularMarketDayHigh,
+          min_dia: data.regularMarketDayLow,
+          cambio_cotizacion: data.regularMarketChange,
         };
       })
       .catch((err) => {
