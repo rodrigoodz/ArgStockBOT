@@ -15,6 +15,7 @@
     "file-system": "^2.2.2",
     "node-bluelytics": "^1.0.3",
     "node-telegram-bot-api": "^0.50.0",
-    "stock-info": "^1.2.0"
+    "stock-info": "^1.2.0",
+    "woke-dyno": "0.0.4"
   }
 }

@@ -1,6 +1,7 @@
 // Imports
 require("dotenv").config();
 const express = require("express");
+const wakeDyno = require("woke-dyno");
 const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./InformeAperturaCierre");
@@ -274,6 +275,12 @@ app.get("/", function (req, res) {
   res.send(JSON.stringify({ Hello: "World" }));
 });
 app.listen(port, function () {
+  wakeDyno({
+    url: process.env.DYNO_URL, // url string
+    interval: 60000 * 25, // interval in milliseconds (1 minute in this example)
+    startNap: [23, 0, 0, 0], // the time to start nap in UTC, as [h, m, s, ms] (05:00 UTC in this example)
+    endNap: [5, 0, 0, 0], // time to wake up again, in UTC (09:59:59.999 in this example)
+  }).start();
   console.log(`Escuchando en puerto ${port}`);
 });
 
