@@ -29,13 +29,13 @@ bot.on("message", (msg) => {
   if (msg.chat.type === "private") {
     bot.sendMessage(
       process.env.ORRA_ID,
-      `${msg.from.username} escribio en privado ${msg.text}`,
+      `${msg.from.first_name} escribio en privado ${msg.text}`,
       { parse_mode: "HTML" }
     );
   } else {
     bot.sendMessage(
       process.env.ORRA_ID,
-      `${msg.from.username} escribio en un grupo ${msg.text}`,
+      `${msg.from.first_name} escribio en un grupo ${msg.text}`,
       { parse_mode: "HTML" }
     );
   }
@@ -57,7 +57,7 @@ bot.onText(/\/start/, (msg) => {
 });
 
 //ver la lista de comandos disponibles
-bot.onText(/\/comandos/, async (msg) => {
+bot.onText(/\/comandos/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
     `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
@@ -173,7 +173,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
 });
 
-bot.onText(/\/ticker/, async (msg, match) => {
+bot.onText(/\/ticker/, (msg, match) => {
   //verificar que no escribi /ticker (accion) y solo escribi /ticker
   const comandos_array = match.input.trim().split(" ");
   if (comandos_array.length === 1) {
@@ -283,6 +283,3 @@ app.listen(port, function () {
   }).start();
   console.log(`Escuchando en puerto ${port}`);
 });
-
-//TODO podria hacer que al llamar a .ticker img, mande grafico de la accion
-//TODO estoy asumiendo que todos los tickers ingresados son argentinos, podria expandirlo a mas paises...
