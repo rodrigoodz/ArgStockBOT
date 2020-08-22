@@ -135,9 +135,9 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     //expreso la informacion con un retraso de (accion.delay)
     let delay_time = new Date().getTime() - accion.delay * 60000; //retrasada 20 minutos generalmente
     delay_time = new Date(delay_time);
-    const hora_delay = delay_time.getHours();
+    const hora_delay = delay_time.getUTCHours() - 3;
     const min_delay =
-      (delay_time.getMinutes() < 10 ? "0" : "") + delay_time.getMinutes();
+      (delay_time.getUTCMinutes() < 10 ? "0" : "") + delay_time.getUTCMinutes();
 
     //calculo porcentaje de ganancia/perdida
     let porcentaje_gan_perd = (
@@ -148,18 +148,27 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       porcentaje_gan_perd = "+" + porcentaje_gan_perd;
     }
 
+    //mercadoAbierto?
+    let mensajeTicker = "";
+    let date = new Date();
+    if (date.getUTCHours() - 3 > 11 && date.getUTCHours() - 3 < 18) {
+      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>  
+    <b>${accion.nombre}</b>
+    Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
+    Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
+    Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+    } else {
+      mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>  
+      <b>${accion.nombre}</b>
+      Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
+      Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
+      Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+    }
+
     //sendMessage
-    bot.sendMessage(
-      msg.chat.id,
-      `<i>Info de las ${hora_delay}:${min_delay}hs</i>  
-<b>${accion.nombre}</b>
-Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
-Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
-Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`,
-      {
-        parse_mode: "HTML",
-      }
-    );
+    bot.sendMessage(msg.chat.id, mensajeTicker, {
+      parse_mode: "HTML",
+    });
   }
 });
 
@@ -251,10 +260,10 @@ setInterval(function () {
   let date = new Date();
   //si no es sabado o domingo
   if (date.getDay() !== 0 && date.getDay() !== 6) {
-    if (date.getHours() === 10 && date.getMinutes() === 55) {
+    if (date.getUTCHours() - 3 === 10 && date.getUTCMinutes() === 55) {
       informeApertura(1);
     }
-    if (date.getHours() === 17 && date.getMinutes() === 55) {
+    if (date.getUTCHours() - 3 === 17 && date.getUTCMinutes() === 55) {
       informeApertura(0);
     }
   }
