@@ -15,6 +15,8 @@ Bot realizado en NodeJS utilizando los modulos:
 [node-bluelytics](https://www.npmjs.com/package/node-bluelytics)
 <br>
 [express](https://www.npmjs.com/package/express)
+<br>
+[woke-dyno](https://www.npmjs.com/package/woke-dyno)
 
 ### Comandos
 
