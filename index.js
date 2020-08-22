@@ -1,5 +1,6 @@
 // Imports
 require("dotenv").config();
+const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./InformeAperturaCierre");
@@ -12,6 +13,10 @@ const bot = new TelegramBot(token, { polling: true });
 
 //bot_id
 const bot_id = process.env.BOT_ID;
+
+//server
+const port = process.env.PORT || 3000;
+const app = express();
 
 //para tener un control de los mensajes al bot
 bot.on("message", (msg) => {
@@ -254,6 +259,14 @@ setInterval(function () {
     }
   }
 }, 60000); //60000
+
+//server
+app.get("/", function (req, res) {
+  res.send(JSON.stringify({ Hello: "World" }));
+});
+app.listen(port, function () {
+  console.log(`Escuchando en puerto ${port}`);
+});
 
 //TODO podria hacer que al llamar a .ticker img, mande grafico de la accion
 //TODO estoy asumiendo que todos los tickers ingresados son argentinos, podria expandirlo a mas paises...
