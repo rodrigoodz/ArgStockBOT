@@ -19,25 +19,22 @@ const bot_id = process.env.BOT_ID;
 const port = process.env.PORT || 3000;
 const app = express();
 
-//para tener un control de los mensajes al bot
+//para tener un control de los mensajes al bot (envio en chat de telegram y por consola)
 bot.on("message", (msg) => {
-  // if (msg.chat.type === "private") {
-  //   console.log(`${msg.from.username} te escribio en privado ${msg.text}`);
-  // } else {
-  //   console.log(`${msg.from.username} te escribio en un grupo ${msg.text}`);
-  // }
   if (msg.chat.type === "private") {
     bot.sendMessage(
       process.env.ORRA_ID,
       `${msg.from.first_name} escribio en privado ${msg.text}`,
       { parse_mode: "HTML" }
     );
+    console.log(`${msg.from.first_name} escribio en privado ${msg.text}`);
   } else {
     bot.sendMessage(
       process.env.ORRA_ID,
       `${msg.from.first_name} escribio en un grupo ${msg.text}`,
       { parse_mode: "HTML" }
     );
+    console.log(`${msg.from.first_name} escribio en privado ${msg.text}`);
   }
 });
 
@@ -276,10 +273,10 @@ app.get("/", function (req, res) {
 });
 app.listen(port, function () {
   wakeDyno({
-    url: process.env.DYNO_URL, // url string
-    interval: 60000 * 25, // interval in milliseconds (1 minute in this example)
-    startNap: [23, 0, 0, 0], // the time to start nap in UTC, as [h, m, s, ms] (05:00 UTC in this example)
-    endNap: [5, 0, 0, 0], // time to wake up again, in UTC (09:59:59.999 in this example)
+    url: process.env.DYNO_URL,
+    interval: 60000 * 25,
+    startNap: [23, 0, 0, 0],
+    endNap: [5, 0, 0, 0],
   }).start();
   console.log(`Escuchando en puerto ${port}`);
 });
