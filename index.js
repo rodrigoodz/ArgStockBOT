@@ -44,10 +44,10 @@ bot.onText(/\/start/, (msg) => {
     msg.chat.id,
     `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver los comandos disponibles,escriba <b>/comandos</b>
     <pre>Funciones:
--Al ser agregado a un grupo, este informa el cierre y apertura del mercado argentino
--Ver la lista de todas las acciones argentinas
--Consultar la cotizacion de un accion argentina de forma particular
--Consultar el precio del dolar actual</pre>
+-Si el bot es agregado a un grupo, este informará el cierre y apertura del mercado argentino con 5 minutos de antelación
+-Ver la lista de todas las empresas argentinas que cotizan en bolsa
+-Consultar la cotizacion de un empresa argentina en forma particular 
+-Consultar el precio del dolar actual utiizando la informacion provista por Bluelytics</pre>
 `,
     { parse_mode: "HTML" }
   );
@@ -129,7 +129,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       parse_mode: "HTML",
     });
   } else {
-    //si accion es un objeto
+    //si accion es un objeto (no retorno mensaje error)
+
     //expreso la informacion con un retraso de (accion.delay)
     let delay_time = new Date().getTime() - accion.delay * 60000; //retrasada 20 minutos generalmente
     delay_time = new Date(delay_time);
@@ -146,9 +147,10 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       porcentaje_gan_perd = "+" + porcentaje_gan_perd;
     }
 
-    //mercadoAbierto?
+    //Segun el dia y la hora, muestro diferentes mensajes al escribir el comando
     let mensajeTicker = "";
     let date = new Date();
+    //si es un dia de semana de 11 a 18
     if (
       date.getUTCHours() - 3 > 11 &&
       date.getUTCHours() - 3 < 18 &&
@@ -161,6 +163,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
     Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
     } else {
+      //en cualquier otro caso muestro los ultimos datos del mercado
       mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>  
       <b>${accion.nombre}</b>
       Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
@@ -189,7 +192,7 @@ Ejemplo: /ticker ypfd</pre>`,
   }
 });
 
-//comando /dolar
+//comando /dolar -> utiliza la informacion de Bluelytics
 bot.onText(/\/dolar/, (msg) => {
   Bluelytics.get().then((result) => {
     const { oficial, blue, last_update } = result;
@@ -220,9 +223,13 @@ Venta: ${blue.value_sell} ARS // Compra: ${blue.value_buy} ARS
 bot.onText(/\/about/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `Bot desarrollado por @orra6 - Contacto: rodrigoodz@gmail.com`,
+    `Bot desarrollado por @orra6
+Contacto: rodrigoodz@gmail.com
+Repositorio: <a href="https://github.com/rodrigoodz/ArgStockBOT">ArgStockBot - GitHub</a>
+Donar: <a  href="https://www.mercadopago.com.ar/checkout/v1/redirect/1b830039-3a08-46c5-930a-23a867a29cae/error/?preference-id=83617641-ae4ea1f1-0674-4ddb-bde5-227c20187147&p=7d5266ef7912b9222ebede199e94543d">MercadoPago</a> - <a  href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WQWFXA3P3NP8E&currency_code=USD&source=url">Paypal</a>`,
     {
       parse_mode: "HTML",
+      disable_web_page_preview: true,
     }
   );
 });
