@@ -275,8 +275,9 @@ app.listen(port, function () {
   wakeDyno({
     url: process.env.DYNO_URL,
     interval: 60000 * 25,
-    startNap: [23, 0, 0, 0],
-    endNap: [5, 0, 0, 0],
+    startNap: [4, 0, 0, 0],
+    endNap: [10, 0, 0, 0],
+    //'siesta' de 4am a 10am (UTC)
   }).start();
   console.log(`Escuchando en puerto ${port}`);
 });
