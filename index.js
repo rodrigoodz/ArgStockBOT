@@ -8,6 +8,14 @@ const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
 const { getListado, agregar, borrar } = require("./ControladorRegistroChats");
 
+//variables de entorno utilizada (referencia) - dejar comentado
+// NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
+// BOT_TOKEN=(token_botfather)
+// BOT_ID=(bot_id)
+// ORRA_ID=(id_grupo_logs) -> recibo alertas del bot y como interactua con las personas que lo utilizan
+// ORRA_ID_PRIV=(id_propio_telegram)
+// DYNO_URL=(sitio_web_heroku)"
+
 // node-telegram-bot-api
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
@@ -19,7 +27,7 @@ const bot_id = process.env.BOT_ID;
 const port = process.env.PORT || 3000;
 const app = express();
 
-//comando /global solo utilizable por el creador
+//comando /global (enviar mensaje a todos los grupos donde el bot pertenezca, util por si quiero informar algo)
 bot.onText(/\/global (.+)/, (msg, match) => {
   if (String(msg.from.id) === process.env.ORRA_ID_PRIV) {
     const chats = getListado();
@@ -49,7 +57,7 @@ bot.on("message", (msg) => {
   }
 });
 
-//comando /start (funciona en grupos y mp)
+//comando /start (funciona en grupos y en mensajes directos)
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -58,8 +66,7 @@ bot.onText(/\/start/, (msg) => {
 -Si el bot es agregado a un grupo, este informará el cierre y apertura del mercado argentino con 5 minutos de antelación
 -Ver la lista de todas las empresas argentinas que cotizan en bolsa
 -Consultar la cotizacion de un empresa argentina en forma particular 
--Consultar el precio del dolar actual utiizando la informacion provista por Bluelytics</pre>
-`,
+-Consultar el precio del dolar actual utiizando la informacion provista por Bluelytics</pre>`,
     { parse_mode: "HTML" }
   );
 });
@@ -76,7 +83,7 @@ bot.onText(/\/comandos/, (msg) => {
   );
 });
 
-//comando /tickers para ver los tickers argentinos para consultar su cotizacion
+//comando /tickers para ver todas las empresas argentinas que cotizan en bolsa
 bot.onText(/\/tickers/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
@@ -121,8 +128,7 @@ TXAR - Ternium Argentina SA
 VALO - Grupo Financiero Valores SA
 
 YPFD - YPF SA
-</pre>
-  `,
+</pre>`,
     {
       parse_mode: "HTML",
     }
@@ -161,7 +167,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     //Segun el dia y la hora, muestro diferentes mensajes al escribir el comando
     let mensajeTicker = "";
     let date = new Date();
-    //si es un dia de semana de 11 a 18
+    //si es un dia de semana de 11hs a 18hs
     if (
       date.getUTCHours() - 3 > 11 &&
       date.getUTCHours() - 3 < 18 &&
@@ -182,7 +188,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
     }
 
-    //sendMessage
+    //envio el mensaje correspondiente
     bot.sendMessage(msg.chat.id, mensajeTicker, {
       parse_mode: "HTML",
     });
@@ -203,7 +209,7 @@ Ejemplo: /ticker ypfd</pre>`,
   }
 });
 
-//comando /dolar -> utiliza la informacion de Bluelytics
+//comando /dolar -> utilizo la informacion de Bluelytics
 bot.onText(/\/dolar/, (msg) => {
   Bluelytics.get().then((result) => {
     const { oficial, blue, last_update } = result;
@@ -230,7 +236,7 @@ Venta: ${blue.value_sell} ARS // Compra: ${blue.value_buy} ARS
   });
 });
 
-//comando /about para ver informacion acerca del bot
+//comando /about para ver información acerca del bot
 bot.onText(/\/about/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
