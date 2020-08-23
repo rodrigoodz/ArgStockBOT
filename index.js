@@ -149,7 +149,12 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     //mercadoAbierto?
     let mensajeTicker = "";
     let date = new Date();
-    if (date.getUTCHours() - 3 > 11 && date.getUTCHours() - 3 < 18) {
+    if (
+      date.getUTCHours() - 3 > 11 &&
+      date.getUTCHours() - 3 < 18 &&
+      date.getDay() !== 0 &&
+      date.getDay() !== 6
+    ) {
       mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>  
     <b>${accion.nombre}</b>
     Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
