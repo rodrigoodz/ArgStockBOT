@@ -19,6 +19,17 @@ const bot_id = process.env.BOT_ID;
 const port = process.env.PORT || 3000;
 const app = express();
 
+//comando /global solo utilizable por el creador
+bot.onText(/\/global (.+)/, (msg, match) => {
+  if (String(msg.from.id) === process.env.ORRA_ID_PRIV) {
+    const chats = getListado();
+    const mensaje_global = match[1];
+    chats.forEach((chat) => {
+      bot.sendMessage(chat.id, mensaje_global, { parse_mode: "HTML" });
+    });
+  }
+});
+
 //para tener un control de los mensajes al bot (envio en chat de telegram y por consola)
 bot.on("message", (msg) => {
   if (msg.chat.type === "private") {
