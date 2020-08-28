@@ -6,11 +6,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
-const {
-  getDBFirebase,
-  deleteDBFirebase,
-  setDBFirebase,
-} = require("./ControladorFirebase");
+const { deleteDBFirebase, setDBFirebase } = require("./ControladorFirebase");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -30,12 +26,6 @@ const bot_id = process.env.BOT_ID;
 //server
 const port = process.env.PORT || 3000;
 const app = express();
-
-// bot.onText(/\/prueba/, async (msg) => {
-// let chats;
-// chats = await getDBFirebase();
-// console.log("chats ", chats);
-// });
 
 //comando /global (enviar mensaje a todos los grupos donde el bot pertenezca, util por si quiero informar algo)
 bot.onText(/\/global (.+)/, (msg, match) => {

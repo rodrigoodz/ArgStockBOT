@@ -12,10 +12,14 @@ const db = admin.database();
 
 const getDBFirebase = () => {
   return new Promise((resolve, reject) => {
+    let chats = [];
     db.ref("RegistroGrupos").on(
       "value",
       function (snapshot) {
-        chats = snapshot.val();
+        snapshot.forEach(function (child) {
+          let objeto = { id: child.val().id, titulo: child.val().title };
+          chats.push(objeto);
+        });
         resolve(chats);
       },
       function (errorObject) {
