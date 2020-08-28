@@ -4,9 +4,9 @@ const express = require("express");
 const wakeDyno = require("woke-dyno");
 const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
-const { informeApertura } = require("./InformeAperturaCierre");
-const { obtenerCotizacion } = require("./ControladorTickers");
-const { deleteDBFirebase, setDBFirebase } = require("./ControladorFirebase");
+const { informeApertura } = require("./js/InformeAperturaCierre");
+const { obtenerCotizacion } = require("./js/ControladorTickers");
+const { deleteDBFirebase, setDBFirebase } = require("./js/ControladorFirebase");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api

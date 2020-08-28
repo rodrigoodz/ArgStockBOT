@@ -2,7 +2,7 @@
 const admin = require("firebase-admin");
 
 //firebase
-const serviceAccount = require("./arg-stock-bot-firebase-adminsdk-we592-92aa118e6b.json");
+const serviceAccount = require("../arg-stock-bot-firebase-adminsdk-we592-92aa118e6b.json");
 const { database } = require("firebase-admin");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
