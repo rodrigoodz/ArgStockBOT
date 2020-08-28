@@ -7,6 +7,12 @@ const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./js/InformeAperturaCierre");
 const { obtenerCotizacion } = require("./js/ControladorTickers");
 const { deleteDBFirebase, setDBFirebase } = require("./js/ControladorFirebase");
+const {
+  logMensajePrivado,
+  logMensajeGrupal,
+  logAgregadoAGrupo,
+  logQuitadoDeGrupo,
+} = require("./js/ControladorLogs");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -41,19 +47,9 @@ bot.onText(/\/global (.+)/, (msg, match) => {
 //para tener un control de los mensajes al bot (envio en chat de telegram y por consola)
 bot.on("message", (msg) => {
   if (msg.chat.type === "private") {
-    bot.sendMessage(
-      process.env.ORRA_ID,
-      `${msg.from.first_name} escribio en privado ${msg.text}`,
-      { parse_mode: "HTML" }
-    );
-    console.log(`${msg.from.first_name} escribio en privado ${msg.text}`);
+    logMensajePrivado(msg);
   } else {
-    bot.sendMessage(
-      process.env.ORRA_ID,
-      `${msg.from.first_name} escribio en un grupo ${msg.text}`,
-      { parse_mode: "HTML" }
-    );
-    console.log(`${msg.from.first_name} escribio en privado ${msg.text}`);
+    logMensajeGrupal(msg);
   }
 });
 
@@ -257,9 +253,7 @@ bot.on("new_chat_members", (msg) => {
   let { id: userID } = msg.new_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
   if (String(userID) === bot_id) {
-    console.log(
-      `Agregaron al bot al grupo [${GroupTITLE}] con id [${GroupID}]`
-    );
+    logAgregadoAGrupo(GroupID, GroupTITLE);
     //manejo db
     setDBFirebase(String(GroupID), GroupTITLE);
   }
@@ -270,9 +264,7 @@ bot.on("left_chat_member", (msg) => {
   const { id: userID } = msg.left_chat_member;
   const { id: GroupID, title: GroupTITLE } = msg.chat;
   if (String(userID) === bot_id) {
-    console.log(
-      `Quitaron al bot del grupo [${GroupTITLE}] con id [${GroupID}]`
-    );
+    logQuitadoDeGrupo(GroupID, GroupTITLE);
     //manejo db
     deleteDBFirebase(String(GroupID));
   }
