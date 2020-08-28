@@ -6,7 +6,11 @@ const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./InformeAperturaCierre");
 const { obtenerCotizacion } = require("./ControladorTickers");
-const { getListado, agregar, borrar } = require("./ControladorRegistroChats");
+const {
+  getDBFirebase,
+  deleteDBFirebase,
+  setDBFirebase,
+} = require("./ControladorFirebase");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -26,6 +30,12 @@ const bot_id = process.env.BOT_ID;
 //server
 const port = process.env.PORT || 3000;
 const app = express();
+
+// bot.onText(/\/prueba/, async (msg) => {
+// let chats;
+// chats = await getDBFirebase();
+// console.log("chats ", chats);
+// });
 
 //comando /global (enviar mensaje a todos los grupos donde el bot pertenezca, util por si quiero informar algo)
 bot.onText(/\/global (.+)/, (msg, match) => {
@@ -261,8 +271,7 @@ bot.on("new_chat_members", (msg) => {
       `Agregaron al bot al grupo [${GroupTITLE}] con id [${GroupID}]`
     );
     //manejo db
-    const chats = getListado();
-    const guardo = agregar(GroupID, GroupTITLE);
+    setDBFirebase(String(GroupID), GroupTITLE);
   }
 });
 
@@ -275,7 +284,7 @@ bot.on("left_chat_member", (msg) => {
       `Quitaron al bot del grupo [${GroupTITLE}] con id [${GroupID}]`
     );
     //manejo db
-    const borro = borrar(GroupID);
+    deleteDBFirebase(String(GroupID));
   }
 });
 
