@@ -17,6 +17,8 @@ Bot realizado en NodeJS utilizando los modulos:
 [express](https://www.npmjs.com/package/express)
 <br>
 [woke-dyno](https://www.npmjs.com/package/woke-dyno)
+<br>
+[firebase-admin](https://www.npmjs.com/package/firebase-admin)
 
 ### Comandos
 
