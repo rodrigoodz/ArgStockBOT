@@ -164,12 +164,9 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     let mensajeTicker = "";
     let date = new Date();
     //si es un dia de semana de 11hs a 18hs
-    if (
-      date.getUTCHours() - 3 > 11 &&
-      date.getUTCHours() - 3 < 18 &&
-      date.getDay() !== 0 &&
-      date.getDay() !== 6
-    ) {
+    const hora = date.getUTCHours() - 3;
+    const dia = date.getDay();
+    if (hora >= 11 && hora <= 18 && dia !== 0 && dia !== 6) {
       mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>  
     <b>${accion.nombre}</b>
     Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
