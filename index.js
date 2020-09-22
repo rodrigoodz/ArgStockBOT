@@ -160,25 +160,31 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       porcentaje_gan_perd = "+" + porcentaje_gan_perd;
     }
 
-    //Segun el dia y la hora, muestro diferentes mensajes al escribir el comando
-    let mensajeTicker = "";
     let date = new Date();
     //si es un dia de semana de 11hs a 18hs
     const hora = date.getUTCHours() - 3;
     const dia = date.getDay();
-    if (hora >= 11 && hora <= 18 && dia !== 0 && dia !== 6) {
-      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>  
-    <b>${accion.nombre}</b>
-    Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
-    Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
-    Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+    const minutos = date.getMinutes();
+    //Segun el dia y la hora, muestro diferentes mensajes al escribir el comando
+    let mensajeTicker = "";
+    const mensaje_accion = `<b>${accion.nombre}</b>
+  Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
+  Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
+  Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+
+    if (hora >= 11 && minutos > 20 && hora <= 18 && dia !== 0 && dia !== 6) {
+      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i> 
+  ${mensaje_accion}`;
+    } else if (hora >= 11 && minutos <= 20) {
+      //TODO mejorar mensaje
+      mensajeTicker = `<i>El mercado ya abrió, pero el precio consultado tiene un retraso de 20 minutos. Espere por favor</i>`;
+    } else if (hora >= 18 && minutos > 20) {
+      mensajeTicker = `<i>[El mercado ha cerrado. Ultimos Datos]</i>  
+  ${mensaje_accion}`;
     } else {
       //en cualquier otro caso muestro los ultimos datos del mercado
       mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>  
-      <b>${accion.nombre}</b>
-      Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
-      Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
-      Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+  ${mensaje_accion}`;
     }
 
     //envio el mensaje correspondiente
