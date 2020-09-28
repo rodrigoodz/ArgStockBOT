@@ -167,20 +167,32 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
   Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
 
-    if (hora >= 11 && minutos > 20 && hora <= 18 && dia !== 0 && dia !== 6) {
-      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i> 
-  ${mensaje_accion}`;
-    } else if (hora >= 11 && minutos <= 20) {
-      //TODO mejorar mensaje
+    //   if (hora >= 11 && minutos > 20 && hora <= 18 && dia !== 0 && dia !== 6) {
+    //     mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>
+    // ${mensaje_accion}`;
+    //   } else if (hora >= 11 && hora < 12 && minutos <= 20) {
+    //     //TODO mejorar mensaje
+    //     mensajeTicker = `<i>El mercado ya abrió, pero el precio consultado tiene un retraso de 20 minutos. Espere por favor</i>`;
+    //   } else if (hora >= 18 && hora < 19 && minutos <= 20) {
+    //     mensajeTicker = `<i>[El mercado ha cerrado recientemente. Ultimos Datos]</i>
+    // ${mensaje_accion}`;
+    //   } else {
+    //     //en cualquier otro caso muestro los ultimos datos del mercado
+    //     mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>
+    // ${mensaje_accion}`;
+    //   }
+    //################################
+    if (hora == 11 && minutos <= 20) {
       mensajeTicker = `<i>El mercado ya abrió, pero el precio consultado tiene un retraso de 20 minutos. Espere por favor</i>`;
-    } else if (hora >= 18 && minutos > 20) {
-      mensajeTicker = `<i>[El mercado ha cerrado. Ultimos Datos]</i>  
+    } else if (hora >= 11 && hora < 18) {
+      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i> 
   ${mensaje_accion}`;
     } else {
       //en cualquier otro caso muestro los ultimos datos del mercado
       mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>  
   ${mensaje_accion}`;
     }
+    //################################
 
     //envio el mensaje correspondiente
     bot.sendMessage(msg.chat.id, mensajeTicker, {
