@@ -52,7 +52,7 @@ const logMensajeGrupal = (msg) => {
         { parse_mode: "HTML" }
       );
       console.log(`${msg.from.first_name} le mando una imagen en un grupo`);
-    } else {
+    } else if (!msg.new_chat_member && !msg.left_chat_member) {
       bot.sendMessage(
         process.env.ORRA_ID,
         `<b>${msg.from.first_name}</b> le escribio en un grupo "${msg.text}"`,
