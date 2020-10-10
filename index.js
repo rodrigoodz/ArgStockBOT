@@ -5,7 +5,7 @@ const wakeDyno = require("woke-dyno");
 const TelegramBot = require("node-telegram-bot-api");
 const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./js/InformeAperturaCierre");
-const { obtenerCotizacion } = require("./js/ControladorTickers");
+const iol = require("./js/node-iol");
 const { deleteDBFirebase, setDBFirebase } = require("./js/ControladorFirebase");
 const {
   logMensajePrivado,
@@ -129,70 +129,64 @@ YPFD - YPF SA
 //comando /ticker (ticker_accion) para ver la cotizacion actual de un ticker particular
 bot.onText(/\/ticker (.+)/, async (msg, match) => {
   const ticker = match[1];
-  const accion = await obtenerCotizacion(ticker);
-  // console.log(accion);
-  //si accion es un string (con el error)
-  if (typeof accion === "string") {
-    bot.sendMessage(msg.chat.id, `${accion}`, {
-      parse_mode: "HTML",
-    });
+  let token = await iol.auth(); //autentificarme
+  const { descripcion } = await iol.getTicker(token, "bCBA", ticker);
+
+  //si la promesa es rechazada devuelve "Error"
+  if (descripcion === "Error") {
+    bot.sendMessage(
+      msg.chat.id,
+      `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+      {
+        parse_mode: "HTML",
+      }
+    );
   } else {
-    //si accion es un objeto (no retorno mensaje error)
+    //si la respuesta es correcta
+    const {
+      ultimoPrecio,
+      variacion,
+      maximo,
+      minimo,
+      fechaHora,
+      cierreAnterior,
+    } = await iol.getTickerValue(token, "bCBA", ticker);
+    //fecha de la consulta
+    const [, mes, dia] = fechaHora.trim().split("T")[0].trim().split("-");
+    const [hora, min] = fechaHora
+      .trim()
+      .split("T")[1]
+      .trim()
+      .split(".")[0]
+      .trim()
+      .split(":");
 
-    //expreso la informacion con un retraso de (accion.delay)
-    let delay_time = new Date().getTime() - accion.delay * 60000; //retrasada 20 minutos generalmente
-    delay_time = new Date(delay_time);
-    const hora_delay = delay_time.getUTCHours() - 3;
-    const min_delay =
-      (delay_time.getUTCMinutes() < 10 ? "0" : "") + delay_time.getUTCMinutes();
-
-    //calculo porcentaje de ganancia/perdida
-    let porcentaje_gan_perd = (
-      (accion.cambio_cotizacion * 100) /
-      accion.max_dia
-    ).toFixed(2);
-    if (porcentaje_gan_perd > 0) {
-      porcentaje_gan_perd = "+" + porcentaje_gan_perd;
-    }
-
+    //fecha actual
     let date = new Date();
     //si es un dia de semana de 11hs a 18hs
-    const hora = date.getUTCHours() - 3;
-    const dia = date.getDay();
-    const minutos = date.getMinutes();
-    //Segun el dia y la hora, muestro diferentes mensajes al escribir el comando
+    const hora_actual = date.getUTCHours() - 3;
+    const dia_actual = date.getDay();
+    //Segun el dia y la hora_actual, muestro diferentes mensajes al escribir el comando
     let mensajeTicker = "";
-    const mensaje_accion = `<b>${accion.nombre}</b>
-  Precio Actual: <b>${accion.precio} ${accion.moneda}</b>
-  Rango día: <b>${accion.min_dia} ${accion.moneda}</b> - <b>${accion.max_dia} ${accion.moneda}</b>
-  Ganancia/Perdida: <b>${porcentaje_gan_perd}%</b>`;
+    const mensaje_accion = `<b>${descripcion}</b>
+  Precio Actual: <b>${ultimoPrecio} $</b>
+  Cierre Anteror: <b>${cierreAnterior} $</b>
+  Rango día: <b>${minimo} $</b> - <b>${maximo} $</b>
+  Ganancia/Perdida: <b>${variacion}%</b>`;
 
-    //   if (hora >= 11 && minutos > 20 && hora <= 18 && dia !== 0 && dia !== 6) {
-    //     mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i>
-    // ${mensaje_accion}`;
-    //   } else if (hora >= 11 && hora < 12 && minutos <= 20) {
-    //     //TODO mejorar mensaje
-    //     mensajeTicker = `<i>El mercado ya abrió, pero el precio consultado tiene un retraso de 20 minutos. Espere por favor</i>`;
-    //   } else if (hora >= 18 && hora < 19 && minutos <= 20) {
-    //     mensajeTicker = `<i>[El mercado ha cerrado recientemente. Ultimos Datos]</i>
-    // ${mensaje_accion}`;
-    //   } else {
-    //     //en cualquier otro caso muestro los ultimos datos del mercado
-    //     mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>
-    // ${mensaje_accion}`;
-    //   }
-    //################################
-    if (hora == 11 && minutos <= 20) {
-      mensajeTicker = `<i>El mercado ya abrió, pero el precio consultado tiene un retraso de 20 minutos. Espere por favor</i>`;
-    } else if (hora >= 11 && hora < 18) {
-      mensajeTicker = `<i>[Datos de las ${hora_delay}:${min_delay}hs]</i> 
+    if (
+      hora_actual >= 11 &&
+      hora_actual <= 18 &&
+      dia_actual !== 0 &&
+      dia_actual !== 6
+    ) {
+      mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i> 
   ${mensaje_accion}`;
     } else {
       //en cualquier otro caso muestro los ultimos datos del mercado
-      mensajeTicker = `<i>[Mercado Cerrado. Ultimos Datos]</i>  
+      mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>  
   ${mensaje_accion}`;
     }
-    //################################
 
     //envio el mensaje correspondiente
     bot.sendMessage(msg.chat.id, mensajeTicker, {
