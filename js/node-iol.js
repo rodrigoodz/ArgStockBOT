@@ -20,16 +20,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.  */
 
+/// Al desplegar en Heroku, como no puedo manipular archivos .json, todo la data del token la manejo
+/// dentro de la variable dataIOL
+require("dotenv").config({ path: __dirname + "../.env" });
 const axios = require("axios");
 const querystring = require("querystring");
 
 const fs = require("fs").promises;
 // const credentials = require("../auth.json");
-const username = process.env.username;
+const username = process.env.usuario1;
 const password = process.env.password;
 const grant_type = process.env.grant_type;
 
 let apiUrl = "https://api.invertironline.com/api/v2";
+
+let dataIOL = {};
 
 async function getTicker(token, market, asset) {
   let res = await axios
@@ -63,28 +68,32 @@ async function getTickerValue(token, market, asset) {
 }
 
 async function readToken() {
-  let token = await fs.readFile("token.json");
-  return JSON.parse(token);
+  // let token = await fs.readFile("token.json");
+  // return JSON.parse(token);
+  let token = dataIOL;
+  return token;
 }
 
-async function fileExists(file) {
-  try {
-    let esta = (await fs.stat(file).catch((e) => (e ? false : true)))
-      ? true
-      : false;
-    return esta;
-  } catch (e) {
-    if (e) return false;
-  }
-}
+// async function fileExists(file) {
+//   try {
+//     let esta = (await fs.stat(file).catch((e) => (e ? false : true)))
+//       ? true
+//       : false;
+//     return esta;
+//   } catch (e) {
+//     if (e) return false;
+//   }
+// }
 
 async function auth() {
-  let exists = await fileExists("token.json");
-  if (exists) {
-    let tokenData = await fs.readFile("token.json");
-    token = JSON.parse(tokenData);
+  // let exists = await fileExists("token.json");
+  Object.keys(dataIOL).length === 0;
+  if (Object.keys(dataIOL).length !== 0) {
+    // let tokenData = await fs.readFile("token.json");
+    // token = JSON.parse(tokenData);
+    let token = dataIOL;
     if (new Date(token[".expires"]) < new Date()) {
-      await fs.unlink("token.json");
+      // await fs.unlink("token.json");
       await getToken(token.refresh_token);
       return await readToken();
     } else {
@@ -108,7 +117,8 @@ async function getToken(refreshToken) {
     creds = querystring.stringify({ username, password, grant_type });
   }
   let token = await axios.post("https://api.invertironline.com/token", creds);
-  await fs.appendFile("token.json", JSON.stringify(token.data));
+  dataIOL = token.data;
+  // await fs.appendFile("token.json", JSON.stringify(token.data));
 }
 
 module.exports = {
