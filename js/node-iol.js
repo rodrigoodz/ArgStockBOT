@@ -26,7 +26,7 @@ require("dotenv").config({ path: __dirname + "../.env" });
 const axios = require("axios");
 const querystring = require("querystring");
 
-const fs = require("fs").promises;
+// const fs = require("fs").promises;
 // const credentials = require("../auth.json");
 const username = process.env.usuario1;
 const password = process.env.password;

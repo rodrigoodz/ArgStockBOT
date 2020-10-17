@@ -8,8 +8,6 @@ El bot fue realizado completamente en Javascript, mediante NodeJS, utilizando lo
 <br>
 [dotenv](https://www.npmjs.com/package/dotenv)
 <br>
-[fs-filesystem](https://www.npmjs.com/package/fs-filesystem)
-<br>
 [node-bluelytics](https://www.npmjs.com/package/node-bluelytics)
 <br>
 [express](https://www.npmjs.com/package/express)
