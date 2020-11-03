@@ -68,34 +68,22 @@ async function getTickerValue(token, market, asset) {
 }
 
 async function readToken() {
-  // let token = await fs.readFile("token.json");
-  // return JSON.parse(token);
   let token = dataIOL;
   return token;
 }
 
-// async function fileExists(file) {
-//   try {
-//     let esta = (await fs.stat(file).catch((e) => (e ? false : true)))
-//       ? true
-//       : false;
-//     return esta;
-//   } catch (e) {
-//     if (e) return false;
-//   }
-// }
-
 async function auth() {
-  // let exists = await fileExists("token.json");
-  Object.keys(dataIOL).length === 0;
   if (Object.keys(dataIOL).length !== 0) {
-    // let tokenData = await fs.readFile("token.json");
-    // token = JSON.parse(tokenData);
     let token = dataIOL;
     if (new Date(token[".expires"]) < new Date()) {
-      // await fs.unlink("token.json");
-      await getToken(token.refresh_token);
-      return await readToken();
+      if (new Date(token[".refreshexpires"]) < new Date()) {
+        await getToken();
+        return await readToken();
+      } else {
+        // await fs.unlink("token.json");
+        await getToken(token.refresh_token);
+        return await readToken();
+      }
     } else {
       return token;
     }
@@ -113,12 +101,14 @@ async function getToken(refreshToken) {
       grant_type: "refresh_token",
     });
   } else {
-    // creds = querystring.stringify(credentials);
-    creds = querystring.stringify({ username, password, grant_type });
+    creds = querystring.stringify({
+      username: process.env.usuario1,
+      password: process.env.password,
+      grant_type: process.env.grant_type,
+    });
   }
   let token = await axios.post("https://api.invertironline.com/token", creds);
   dataIOL = token.data;
-  // await fs.appendFile("token.json", JSON.stringify(token.data));
 }
 
 module.exports = {
