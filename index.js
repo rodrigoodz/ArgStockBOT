@@ -52,12 +52,12 @@ bot.on("message", (msg) => {
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver los comandos disponibles,escriba <b>/comandos</b>
-    <pre>Funciones:
+    `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver todos comandos disponibles,escriba <b>/comandos</b>
+  <pre>Funciones:
 -Si el bot es agregado a un grupo, este informará el cierre y apertura del mercado argentino con 5 minutos de antelación
--Ver la lista de todas las empresas argentinas que cotizan en bolsa
--Consultar la cotizacion de un empresa argentina en forma particular 
--Consultar el precio del dolar actual utiizando la informacion provista por Bluelytics</pre>`,
+-Ver la lista de las empresas argentinas que cotizan en bolsa
+-Consultar la cotización de una empresa argentina en forma particular 
+-Consultar el precio del dolar actual utilizando la informacion provista por Bluelytics</pre>`,
     { parse_mode: "HTML" }
   );
 });
