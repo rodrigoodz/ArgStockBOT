@@ -66,7 +66,7 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/comandos/, (msg) => {
   bot.sendMessage(
     msg.chat.id,
-    `<b>/tickers</b> -> muestra una lista todos los tickers argentinos que pueden ser consultados
+    `<b>/tickers</b> -> muestra una lista de todos los tickers argentinos del panel general
 <b>/ticker (ticker_argentino)</b> -> consultar un ticker particular del mercado argentino
 <b>/dolar</b> -> obtener precio del dolar (info. de Bluelytics)
 <b>/about</b> -> informacion`,
