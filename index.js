@@ -285,7 +285,7 @@ setInterval(function () {
     if (date.getUTCHours() - 3 === 10 && date.getUTCMinutes() === 55) {
       informeApertura(1);
     }
-    if (date.getUTCHours() - 3 === 17 && date.getUTCMinutes() === 55) {
+    if (date.getUTCHours() - 3 === 16 && date.getUTCMinutes() === 55) {
       informeApertura(0);
     }
   }
