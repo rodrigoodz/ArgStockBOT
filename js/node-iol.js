@@ -51,6 +51,16 @@ async function getTicker(token, market, asset) {
   return res.data;
 }
 
+async function getPanels(token, asset, panel, country) {
+  let res = await axios.get(
+    `${apiUrl}/Cotizaciones/${asset}/${panel}/${country}`,
+    {
+      headers: { Authorization: `Bearer ${token.access_token}` },
+    }
+  );
+  return res.data;
+}
+
 async function getTickerValue(token, market, asset) {
   let res = await axios
     .get(`${apiUrl}/${market}/Titulos/${asset}/Cotizacion`, {
@@ -59,11 +69,35 @@ async function getTickerValue(token, market, asset) {
     .catch((err) => {
       if (err.response.status) {
         return {
-          data:
-            "El ticker solicitado no existe, escriba el comando /tickers para ver la lista de tickers",
+          data: "Error",
         };
       }
     });
+  return res.data;
+}
+
+async function getOptions(token, market, asset) {
+  let res = await axios
+    .get(`${apiUrl}/${market}/Titulos/${asset}/Opciones`, {
+      headers: { Authorization: `Bearer ${token.access_token}` },
+    })
+    .catch((err) => {
+      if (err.response.status) {
+        return {
+          data: "Error",
+        };
+      }
+    });
+  return res.data;
+}
+
+async function getInstrumentsByCountry(token, country) {
+  let res = await axios.get(
+    `${apiUrl}/${country}/Titulos/Cotizacion/Instrumentos`,
+    {
+      headers: { Authorization: `Bearer ${token.access_token}` },
+    }
+  );
   return res.data;
 }
 
@@ -108,6 +142,7 @@ async function getToken(refreshToken) {
     });
   }
   let token = await axios.post("https://api.invertironline.com/token", creds);
+
   dataIOL = token.data;
 }
 
@@ -115,4 +150,7 @@ module.exports = {
   getTicker,
   getTickerValue,
   auth,
+  getPanels,
+  getInstrumentsByCountry,
+  getOptions,
 };

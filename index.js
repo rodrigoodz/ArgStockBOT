@@ -14,6 +14,13 @@ const {
   logQuitadoDeGrupo,
 } = require("./js/ControladorLogs");
 const { enviarMensajeGlobal } = require("./js/MensajesGlobales");
+const {
+  es_accion_arg,
+  es_accion_usa,
+  es_cedears,
+  es_adr,
+  es_opcion,
+} = require("./js/tipoTicker");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -126,72 +133,374 @@ YPFD - YPF SA
   );
 });
 
+//TODO mejorar el codigo, unificarlo
+bot.on("callback_query", async (accionboton) => {
+  const { data, ticker, id_solicitante } = JSON.parse(accionboton.data);
+  const id_click = accionboton.from.id;
+  const msg = accionboton.message;
+
+  // console.log(id_click);
+  // console.log(id_solicitante);
+  if (id_click !== id_solicitante) {
+    bot.answerCallbackQuery(accionboton.id, {
+      text: "No sos quien solicitó el ticker",
+      show_alert: true,
+    });
+  } else {
+    bot.deleteMessage(msg.chat.id, msg.message_id);
+
+    if (data == "BCBA" || data == "Cedear") {
+      let token = await iol.auth(); //autentificarme
+      const descripcion = await iol.getTickerValue(token, "bCBA", ticker);
+      if (descripcion === "Error") {
+        bot.sendMessage(
+          msg.chat.id,
+          `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+          {
+            parse_mode: "HTML",
+          }
+        );
+      } else {
+        const {
+          ultimoPrecio,
+          variacion,
+          maximo,
+          minimo,
+          fechaHora,
+          cierreAnterior,
+        } = descripcion;
+        //fecha de la consulta
+        const [, mes, dia] = fechaHora.trim().split("T")[0].trim().split("-");
+        const [hora, min] = fechaHora
+          .trim()
+          .split("T")[1]
+          .trim()
+          .split(".")[0]
+          .trim()
+          .split(":");
+        //   //fecha actual
+        let date = new Date();
+        //si es un dia de semana de 11hs a 18hs
+        const hora_actual = date.getUTCHours() - 3;
+        const dia_actual = date.getDay();
+        //Segun el dia y la hora_actual, muestro diferentes mensajes al escribir el comando
+        let mensajeTicker = "";
+        const mensaje_accion = `<b>${ticker.toUpperCase()}</b>
+        Precio Actual: <b>${ultimoPrecio} $</b>
+        Cierre Anterior: <b>${cierreAnterior} $</b>
+        Rango día: <b>${minimo} $</b> - <b>${maximo} $</b>
+        Ganancia/Perdida: <b>${variacion}%</b>`;
+        if (
+          hora_actual >= 11 &&
+          hora_actual <= 18 &&
+          dia_actual !== 0 &&
+          dia_actual !== 6
+        ) {
+          mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i>
+        ${mensaje_accion}`;
+        } else {
+          //en cualquier otro caso muestro los ultimos datos del mercado
+          mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>
+        ${mensaje_accion}`;
+        }
+        //envio el mensaje correspondiente
+        bot.sendMessage(msg.chat.id, mensajeTicker, {
+          parse_mode: "HTML",
+        });
+      }
+    }
+    if (data == "NYSE" || data == "ADR") {
+      let token = await iol.auth(); //autentificarme
+      const descripcion = await iol.getTickerValue(token, "nYSE", ticker);
+      if (descripcion === "Error") {
+        bot.sendMessage(
+          msg.chat.id,
+          `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+          {
+            parse_mode: "HTML",
+          }
+        );
+      } else {
+        const {
+          ultimoPrecio,
+          variacion,
+          maximo,
+          minimo,
+          fechaHora,
+          cierreAnterior,
+        } = descripcion;
+        //fecha de la consulta
+        const [, mes, dia] = fechaHora.trim().split("T")[0].trim().split("-");
+        const [hora, min] = fechaHora
+          .trim()
+          .split("T")[1]
+          .trim()
+          .split(".")[0]
+          .trim()
+          .split(":");
+        //   //fecha actual
+        let date = new Date();
+        //si es un dia de semana de 11hs a 18hs
+        const hora_actual = date.getUTCHours() - 3;
+        const dia_actual = date.getDay();
+        //Segun el dia y la hora_actual, muestro diferentes mensajes al escribir el comando
+        let mensajeTicker = "";
+        const variacion_fixed = variacion.toFixed(2);
+        const mensaje_accion = `<b>${ticker.toUpperCase()}</b>
+        Precio Actual: <b>${ultimoPrecio} US$</b>
+        Cierre Anterior: <b>${cierreAnterior} US$</b>
+        Rango día: <b>${minimo} US$</b> - <b>${maximo} US$</b>
+        Ganancia/Perdida: <b>${variacion_fixed}%</b>`;
+        if (
+          hora_actual >= 11 &&
+          hora_actual <= 18 &&
+          dia_actual !== 0 &&
+          dia_actual !== 6
+        ) {
+          mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i>
+        ${mensaje_accion}`;
+        } else {
+          //en cualquier otro caso muestro los ultimos datos del mercado
+          mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>
+        ${mensaje_accion}`;
+        }
+        //envio el mensaje correspondiente
+        bot.sendMessage(msg.chat.id, mensajeTicker, {
+          parse_mode: "HTML",
+        });
+      }
+    }
+    //TODO mejorar texto salida
+    //opciones
+    if (data == "CALL") {
+      let token = await iol.auth(); //autentificarme
+
+      const descripcion = await iol.getOptions(token, "bCBA", ticker);
+      if (descripcion === "Error") {
+        bot.sendMessage(
+          msg.chat.id,
+          `No hay opciones para el ticker solicitado o hubo un error`,
+          {
+            parse_mode: "HTML",
+          }
+        );
+      } else {
+        // let aux = [];
+        let mensajeOpciones = "<pre>";
+        descripcion.forEach((e) => {
+          if (e.tipoOpcion == "Call") {
+            // aux.push(e.descripcion);
+            let aux = e.descripcion.replace("Vencimiento:", "Vto.");
+            // aux = aux.replace("Call ", "");
+            mensajeOpciones += `
+  ${aux}`;
+          }
+        });
+        mensajeOpciones += "</pre>";
+        // console.log(aux);
+        bot.sendMessage(msg.chat.id, mensajeOpciones, {
+          parse_mode: "HTML",
+        });
+      }
+    }
+    if (data == "PUT") {
+      let token = await iol.auth(); //autentificarme
+
+      const descripcion = await iol.getOptions(token, "bCBA", ticker);
+      if (descripcion === "Error") {
+        bot.sendMessage(
+          msg.chat.id,
+          `No hay opciones para el ticker solicitado o hubo un error`,
+          {
+            parse_mode: "HTML",
+          }
+        );
+      } else {
+        // let aux = [];
+        let mensajeOpciones = "<pre>";
+        descripcion.forEach((e) => {
+          if (e.tipoOpcion == "Put") {
+            // aux.push(e.descripcion);
+            let aux = e.descripcion.replace("Vencimiento:", "Vto.");
+            // aux = aux.replace("Call ", "");
+            mensajeOpciones += `
+  ${aux}`;
+          }
+        });
+        mensajeOpciones += "</pre>";
+        // console.log(aux);
+        bot.sendMessage(msg.chat.id, mensajeOpciones, {
+          parse_mode: "HTML",
+        });
+      }
+    }
+  }
+});
+
 //comando /ticker (ticker_accion) para ver la cotizacion actual de un ticker particular
 bot.onText(/\/ticker (.+)/, async (msg, match) => {
-  const ticker = match[1];
-  let token = await iol.auth(); //autentificarme
-  const { descripcion } = await iol.getTicker(token, "bCBA", ticker);
+  //TODO si varios estan hablando con el bot esto podria fallar!
+  let ticker = match[1].toLowerCase();
+  // let token = await iol.auth(); //autentificarme
+  //consulto tipo accion y armo botones para seleccionar tipo
+  let botones = [];
+  const accion_arg = es_accion_arg(ticker);
+  const accion_usa = es_accion_usa(ticker);
+  const cedear = es_cedears(ticker);
+  const adr = es_adr(ticker);
 
-  //si la promesa es rechazada devuelve "Error"
-  if (descripcion === "Error") {
+  // const aux = await iol.getOptions(token, "bcBA", ticker);
+  // const aux = await iol.getInstrumentsByCountry(token, "argentina");
+  //const aux = await iol.getPanels(token, "titulos", "bCBA", "argentina");
+  //console.log("aux: ", aux);
+
+  if (accion_arg) {
+    botones.push({
+      text: accion_arg,
+      callback_data: JSON.stringify({
+        data: accion_arg,
+        ticker: ticker,
+        id_solicitante: msg.from.id,
+      }),
+    });
+  }
+  if (accion_usa) {
+    botones.push({
+      text: accion_usa,
+      callback_data: JSON.stringify({
+        data: accion_usa,
+        ticker: ticker,
+        id_solicitante: msg.from.id,
+      }),
+    });
+  }
+  if (cedear) {
+    botones.push({
+      text: cedear,
+      callback_data: JSON.stringify({
+        data: cedear,
+        ticker: ticker,
+        id_solicitante: msg.from.id,
+      }),
+    });
+  }
+  if (adr) {
+    botones.push({
+      text: adr,
+      callback_data: JSON.stringify({
+        data: adr,
+        ticker: ticker,
+        id_solicitante: msg.from.id,
+      }),
+    });
+  }
+  //TODO deberia agregar que si esta en mas de dos muestre los botones, sino muestre la cotizacion directamente sin mostrar botones
+  if (accion_arg || accion_usa || cedear || adr) {
+    bot.sendMessage(msg.chat.id, "Seleccionar", {
+      reply_markup: {
+        inline_keyboard: [botones],
+      },
+    });
+  } else {
+    let token = await iol.auth(); //autentificarme
+    console.log(ticker);
+    const descripcion = await iol.getTickerValue(token, "bCBA", ticker);
+    if (descripcion === "Error") {
+      bot.sendMessage(
+        msg.chat.id,
+        `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } else {
+      const {
+        ultimoPrecio,
+        variacion,
+        maximo,
+        minimo,
+        fechaHora,
+        cierreAnterior,
+      } = descripcion;
+      //fecha de la consulta
+      const [, mes, dia] = fechaHora.trim().split("T")[0].trim().split("-");
+      const [hora, min] = fechaHora
+        .trim()
+        .split("T")[1]
+        .trim()
+        .split(".")[0]
+        .trim()
+        .split(":");
+      //   //fecha actual
+      let date = new Date();
+      //si es un dia de semana de 11hs a 18hs
+      const hora_actual = date.getUTCHours() - 3;
+      const dia_actual = date.getDay();
+      //Segun el dia y la hora_actual, muestro diferentes mensajes al escribir el comando
+      let mensajeTicker = "";
+      const mensaje_accion = `<b>${ticker.toUpperCase()}</b>
+      Precio Actual: <b>${ultimoPrecio} $</b>
+      Cierre Anterior: <b>${cierreAnterior} $</b>
+      Rango día: <b>${minimo} $</b> - <b>${maximo} $</b>
+      Ganancia/Perdida: <b>${variacion}%</b>`;
+      if (
+        hora_actual >= 11 &&
+        hora_actual <= 18 &&
+        dia_actual !== 0 &&
+        dia_actual !== 6
+      ) {
+        mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i>
+      ${mensaje_accion}`;
+      } else {
+        //en cualquier otro caso muestro los ultimos datos del mercado
+        mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>
+      ${mensaje_accion}`;
+      }
+      //envio el mensaje correspondiente
+      bot.sendMessage(msg.chat.id, mensajeTicker, {
+        parse_mode: "HTML",
+      });
+    }
+  }
+});
+
+bot.onText(/\/opciones (.+)/, async (msg, match) => {
+  let ticker = match[1].toLowerCase();
+
+  const opcion_arg = es_opcion(ticker);
+  if (opcion_arg) {
+    bot.sendMessage(msg.chat.id, "Seleccionar", {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: "CALL",
+              callback_data: JSON.stringify({
+                data: "CALL",
+                ticker: ticker,
+                id_solicitante: msg.from.id,
+              }),
+            },
+            {
+              text: "PUT",
+              callback_data: JSON.stringify({
+                data: "PUT",
+                ticker: ticker,
+                id_solicitante: msg.from.id,
+              }),
+            },
+          ],
+        ],
+      },
+    });
+  } else {
     bot.sendMessage(
       msg.chat.id,
-      `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+      `No hay opciones para el ticker solicitado o hubo un error`,
       {
         parse_mode: "HTML",
       }
     );
-  } else {
-    //si la respuesta es correcta
-    const {
-      ultimoPrecio,
-      variacion,
-      maximo,
-      minimo,
-      fechaHora,
-      cierreAnterior,
-    } = await iol.getTickerValue(token, "bCBA", ticker);
-    //fecha de la consulta
-    const [, mes, dia] = fechaHora.trim().split("T")[0].trim().split("-");
-    const [hora, min] = fechaHora
-      .trim()
-      .split("T")[1]
-      .trim()
-      .split(".")[0]
-      .trim()
-      .split(":");
-
-    //fecha actual
-    let date = new Date();
-    //si es un dia de semana de 11hs a 18hs
-    const hora_actual = date.getUTCHours() - 3;
-    const dia_actual = date.getDay();
-    //Segun el dia y la hora_actual, muestro diferentes mensajes al escribir el comando
-    let mensajeTicker = "";
-    const mensaje_accion = `<b>${descripcion}</b>
-  Precio Actual: <b>${ultimoPrecio} $</b>
-  Cierre Anteror: <b>${cierreAnterior} $</b>
-  Rango día: <b>${minimo} $</b> - <b>${maximo} $</b>
-  Ganancia/Perdida: <b>${variacion}%</b>`;
-
-    if (
-      hora_actual >= 11 &&
-      hora_actual <= 18 &&
-      dia_actual !== 0 &&
-      dia_actual !== 6
-    ) {
-      mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i> 
-  ${mensaje_accion}`;
-    } else {
-      //en cualquier otro caso muestro los ultimos datos del mercado
-      mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>  
-  ${mensaje_accion}`;
-    }
-
-    //envio el mensaje correspondiente
-    bot.sendMessage(msg.chat.id, mensajeTicker, {
-      parse_mode: "HTML",
-    });
   }
 });
 
