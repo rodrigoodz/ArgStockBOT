@@ -396,11 +396,18 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
   //TODO deberia agregar que si esta en mas de dos muestre los botones, sino muestre la cotizacion directamente sin mostrar botones
   if (accion_arg || accion_usa || cedear || adr) {
-    bot.sendMessage(msg.chat.id, "Seleccionar", {
-      reply_markup: {
-        inline_keyboard: [botones],
-      },
-    });
+    bot
+      .sendMessage(msg.chat.id, "Seleccionar", {
+        reply_markup: {
+          inline_keyboard: [botones],
+        },
+      })
+      .then((mensaje) => {
+        //despues de 2 minutos borro el mensaje de todos los grupos
+        setTimeout(() => {
+          bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+        }, 60000);
+      });
   } else {
     let token = await iol.auth(); //autentificarme
     console.log(ticker);
