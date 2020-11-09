@@ -153,13 +153,20 @@ bot.on("callback_query", async (accionboton) => {
       let token = await iol.auth(); //autentificarme
       const descripcion = await iol.getTickerValue(token, "bCBA", ticker);
       if (descripcion === "Error") {
-        bot.sendMessage(
-          msg.chat.id,
-          `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
-          {
-            parse_mode: "HTML",
-          }
-        );
+        bot
+          .sendMessage(
+            msg.chat.id,
+            `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+            {
+              parse_mode: "HTML",
+            }
+          )
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       } else {
         const {
           ultimoPrecio,
@@ -453,6 +460,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       })
       .then((mensaje) => {
         //despues de 2 minutos borro el mensaje de todos los grupos
+
         setTimeout(() => {
           bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
         }, 60000);
