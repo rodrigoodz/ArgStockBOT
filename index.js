@@ -204,22 +204,36 @@ bot.on("callback_query", async (accionboton) => {
         ${mensaje_accion}`;
         }
         //envio el mensaje correspondiente
-        bot.sendMessage(msg.chat.id, mensajeTicker, {
-          parse_mode: "HTML",
-        });
+        bot
+          .sendMessage(msg.chat.id, mensajeTicker, {
+            parse_mode: "HTML",
+          })
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       }
     }
     if (data == "NYSE" || data == "ADR") {
       let token = await iol.auth(); //autentificarme
       const descripcion = await iol.getTickerValue(token, "nYSE", ticker);
       if (descripcion === "Error") {
-        bot.sendMessage(
-          msg.chat.id,
-          `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
-          {
-            parse_mode: "HTML",
-          }
-        );
+        bot
+          .sendMessage(
+            msg.chat.id,
+            `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`,
+            {
+              parse_mode: "HTML",
+            }
+          )
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       } else {
         const {
           ultimoPrecio,
@@ -265,9 +279,16 @@ bot.on("callback_query", async (accionboton) => {
         ${mensaje_accion}`;
         }
         //envio el mensaje correspondiente
-        bot.sendMessage(msg.chat.id, mensajeTicker, {
-          parse_mode: "HTML",
-        });
+        bot
+          .sendMessage(msg.chat.id, mensajeTicker, {
+            parse_mode: "HTML",
+          })
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       }
     }
     //TODO mejorar texto salida
@@ -277,13 +298,20 @@ bot.on("callback_query", async (accionboton) => {
 
       const descripcion = await iol.getOptions(token, "bCBA", ticker);
       if (descripcion === "Error") {
-        bot.sendMessage(
-          msg.chat.id,
-          `No hay opciones para el ticker solicitado o hubo un error`,
-          {
-            parse_mode: "HTML",
-          }
-        );
+        bot
+          .sendMessage(
+            msg.chat.id,
+            `No hay opciones para el ticker solicitado o hubo un error`,
+            {
+              parse_mode: "HTML",
+            }
+          )
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       } else {
         // let aux = [];
         let mensajeOpciones = "<pre>";
@@ -298,9 +326,16 @@ bot.on("callback_query", async (accionboton) => {
         });
         mensajeOpciones += "</pre>";
         // console.log(aux);
-        bot.sendMessage(msg.chat.id, mensajeOpciones, {
-          parse_mode: "HTML",
-        });
+        bot
+          .sendMessage(msg.chat.id, mensajeOpciones, {
+            parse_mode: "HTML",
+          })
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       }
     }
     if (data == "PUT") {
@@ -308,13 +343,20 @@ bot.on("callback_query", async (accionboton) => {
 
       const descripcion = await iol.getOptions(token, "bCBA", ticker);
       if (descripcion === "Error") {
-        bot.sendMessage(
-          msg.chat.id,
-          `No hay opciones para el ticker solicitado o hubo un error`,
-          {
-            parse_mode: "HTML",
-          }
-        );
+        bot
+          .sendMessage(
+            msg.chat.id,
+            `No hay opciones para el ticker solicitado o hubo un error`,
+            {
+              parse_mode: "HTML",
+            }
+          )
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       } else {
         // let aux = [];
         let mensajeOpciones = "<pre>";
@@ -329,9 +371,16 @@ bot.on("callback_query", async (accionboton) => {
         });
         mensajeOpciones += "</pre>";
         // console.log(aux);
-        bot.sendMessage(msg.chat.id, mensajeOpciones, {
-          parse_mode: "HTML",
-        });
+        bot
+          .sendMessage(msg.chat.id, mensajeOpciones, {
+            parse_mode: "HTML",
+          })
+          .then((mensaje) => {
+            //despues de 2 minutos borro el mensaje de todos los grupos
+            setTimeout(() => {
+              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+            }, 120000);
+          });
       }
     }
   }
