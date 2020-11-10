@@ -340,15 +340,16 @@ const verOpciones = async (tipo, mercado, ticker, msg) => {
   if (descripcion === "Error") {
     enviarMensajeBorra2Min(msg.chat.id, getMsgErrorOpciones());
   } else {
-    let mensajeOpciones = "<pre>";
+    let mensajeOpciones = "";
     descripcion.forEach((e) => {
       if (e.tipoOpcion == tipo) {
         let aux = e.descripcion.replace("Vencimiento:", "Vto.");
         mensajeOpciones += `
-  ${aux}`;
+  <u>${aux}</u>
+  <i>Variacion: ${e.cotizacion.variacion}% - Ult. Precio: ${e.cotizacion.ultimoPrecio}$</i>`;
       }
     });
-    mensajeOpciones += "</pre>";
+    mensajeOpciones += "";
     enviarMensajeSinBorrar(msg.chat.id, mensajeOpciones);
   }
 };
