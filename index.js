@@ -301,6 +301,12 @@ bot.on("polling_error", (err) => console.log(err));
 
 //---------------------------------------------------------------------------------------
 
+const enviarMensajeSinBorrar = (chat_id, mensaje) => {
+  bot.sendMessage(chat_id, mensaje, {
+    parse_mode: "HTML",
+  });
+};
+
 const enviarMensajeBorra2Min = (chat_id, mensaje) => {
   bot
     .sendMessage(chat_id, mensaje, {
@@ -343,7 +349,7 @@ const verOpciones = async (tipo, mercado, ticker, msg) => {
       }
     });
     mensajeOpciones += "</pre>";
-    enviarMensajeBorra2Min(msg.chat.id, mensajeOpciones);
+    enviarMensajeSinBorrar(msg.chat.id, mensajeOpciones);
   }
 };
 
@@ -403,7 +409,7 @@ const verCotizacion = async (mercado, ticker, msg) => {
     ${mensaje_accion}`;
     }
     //envio el mensaje correspondiente
-    enviarMensajeBorra2Min(msg.chat.id, mensajeTicker);
+    enviarMensajeSinBorrar(msg.chat.id, mensajeTicker);
   }
 };
 
