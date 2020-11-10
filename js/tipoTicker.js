@@ -885,28 +885,28 @@ const es_opcion = (ticker) => {
 const es_accion_arg = (ticker) => {
   const es_accion_arg = acciones_arg.indexOf(ticker);
   if (es_accion_arg !== -1) {
-    return "BCBA";
+    return "bCBA";
   }
 };
 
 const es_accion_usa = (ticker) => {
   const es_accion_arg = acciones_usa.indexOf(ticker);
   if (es_accion_arg !== -1) {
-    return "NYSE";
+    return "nYSE";
   }
 };
 
 const es_cedears = (ticker) => {
   const cedear = cedears.indexOf(ticker);
   if (cedear !== -1) {
-    return "Cedear";
+    return "bCBA";
   }
 };
 
 const es_adr = (ticker) => {
   const adr = adrs.indexOf(ticker);
   if (adr !== -1) {
-    return "ADR";
+    return "nYSE";
   }
 };
 

@@ -101,10 +101,10 @@ bot.on("callback_query", async (accionboton) => {
     bot.deleteMessage(msg.chat.id, msg.message_id);
 
     //Acciones
-    if (data == "BCBA" || data == "Cedear") {
+    if (data == "bCBA") {
       verCotizacion("bCBA", ticker, msg);
     }
-    if (data == "NYSE" || data == "ADR") {
+    if (data == "nYSE") {
       verCotizacion("nYSE", ticker, msg);
     }
 
@@ -155,7 +155,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
   if (cedear) {
     botones.push({
-      text: cedear,
+      text: "Cedear",
       callback_data: JSON.stringify({
         data: cedear,
         ticker: ticker,
@@ -165,7 +165,7 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   }
   if (adr) {
     botones.push({
-      text: adr,
+      text: "ADR",
       callback_data: JSON.stringify({
         data: adr,
         ticker: ticker,
@@ -174,14 +174,23 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
     });
   }
 
-  //TODO deberia agregar que si esta en mas de dos muestre los botones, sino muestre la cotizacion directamente sin mostrar botones
-  if (accion_arg || accion_usa || cedear || adr) {
+  //solo voy a mostrar botones si el ticker está en más de un mercado
+  const tipo = [accion_arg, accion_usa, cedear, adr].filter((elemento) => {
+    return elemento != undefined;
+  });
+
+  //si esta en mas de 1, muestro botones
+  if (tipo.length > 1) {
     bot.sendMessage(msg.chat.id, "Seleccionar", {
       reply_markup: {
         inline_keyboard: [botones],
       },
     });
-  } else {
+  } else if (tipo.length === 1) {
+    //si esta en solo 1, no muestro botones y obtengo la cotizacion directamente
+    verCotizacion(tipo[0], ticker, msg);
+  } else if (tipo.length == 0) {
+    //si no esta en ninguno, puede ser igual un ticker argentino(o que no exista)
     verCotizacion("bCBA", ticker, msg);
   }
 });
