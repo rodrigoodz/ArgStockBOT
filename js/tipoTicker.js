@@ -73,6 +73,7 @@ const acciones_arg = [
 ];
 
 const acciones_usa = [
+  "kod",
   "ach",
   "abev",
   "adeco",
