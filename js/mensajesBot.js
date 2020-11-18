@@ -15,48 +15,28 @@ const comandos = `<b>/tickers</b> -> muestra una lista de todos los tickers arge
 <b>/dolar</b> -> obtener precio del dolar (info. de Bluelytics)
 <b>/about</b> -> informacion`;
 
-const tickers_arg = `<b>Tickers Argentinos</b>
-<pre>
-ALUA - Aluminio Argentino SA
-
-BBAR - Banco Francés SA
-
-BMA - Banco Macro SA
-
-BYMA - Bolsas y Mercados Argentinos SA
-
-CEPU - Central Puerto SA 
-
-COME - Sociedad Comercial del Plata SA
-
-CRES - Cresud SA
-
-CVH - Cablevision Holding SA
-
-EDN - Edenor
-
-GGAL - Grupo Financiero Galicia
-
-MIRG - Mirgor
-
-PAMP - Pampa Energía
-
-SUPV - Grupo Supervielle SA
-
-TECO2 - Telecom Argentina SA
-
-TGNO4 - Transportadora de Gas del Norte SA
-
-TGSU2 - Transportadora de Gas del Sur
-
-TRAN - Transener
-
-TXAR - Ternium Argentina SA
-
-VALO - Grupo Financiero Valores SA
-
-YPFD - YPF SA
-</pre>`;
+const tickers_arg = [
+  "ALUA - Aluminio Argentino SA",
+  "BBAR - Banco Francés SA",
+  "BMA - Banco Macro SA",
+  "BYMA - Bolsas y Mercados Argentinos SA",
+  "CEPU - Central Puerto SA",
+  "COME - Sociedad Comercial del Plata SA",
+  "CRES - Cresud SA",
+  "CVH - Cablevision Holding SA",
+  "EDN - Edenor",
+  "GGAL - Grupo Financiero Galicia",
+  "MIRG - Mirgor",
+  "PAMP - Pampa Energía",
+  "SUPV - Grupo Supervielle SA",
+  "TECO2 - Telecom Argentina SA",
+  "TGNO4 - Transportadora de Gas del Norte SA",
+  "TGSU2 - Transportadora de Gas del Sur",
+  "TRAN - Transener",
+  "TXAR - Ternium Argentina SA",
+  "VALO - Grupo Financiero Valores SA",
+  "YPFD - YPF SA",
+];
 
 const error_ticker = `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`;
 
@@ -78,8 +58,15 @@ const getMsgComandos = () => {
   return comandos;
 };
 
-const getMsgTickersArg = () => {
-  return tickers_arg;
+const getMsgTickersArg = (inicio) => {
+  let text = "";
+  const longitud = tickers_arg.length;
+  for (let i = inicio; i < inicio + 10; i++) {
+    if (i == longitud) break;
+    text += `${tickers_arg[i]}
+`;
+  }
+  return text;
 };
 
 const getMsgErrorTicker = () => {

@@ -78,9 +78,29 @@ bot.onText(/\/comandos/, (msg) => {
 
 //Comando /tickers para ver todas las empresas argentinas que cotizan en bolsa
 bot.onText(/\/tickers/, (msg) => {
-  const msgTickersArg = getMsgTickersArg();
-  bot.sendMessage(msg.chat.id, msgTickersArg, {
-    parse_mode: "HTML",
+  bot.sendMessage(msg.chat.id, "seleccionar", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "MERVAL",
+            callback_data: JSON.stringify({
+              data: "M",
+              soli: "0",
+              id_soli: msg.from.id,
+            }),
+          },
+          {
+            text: "NYSE",
+            callback_data: JSON.stringify({
+              data: "NYSE",
+              soli: "NYSE",
+              id_soli: msg.from.id,
+            }),
+          },
+        ],
+      ],
+    },
   });
 });
 
@@ -99,6 +119,39 @@ bot.on("callback_query", async (accionboton) => {
   } else {
     //borro botones
     bot.deleteMessage(msg.chat.id, msg.message_id);
+
+    //Botones del comando /tickers
+    if (data === "M") {
+      //merval
+      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const msgTickersArg = getMsgTickersArg(inicio);
+      if (msgTickersArg.length !== 0) {
+        bot.sendMessage(msg.chat.id, msgTickersArg, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "Mostrar Mas",
+                  callback_data: JSON.stringify({
+                    data: "M",
+                    soli: `${inicio + 5}`,
+                    id_soli: id_soli,
+                  }),
+                },
+                {
+                  text: "Cerrar",
+                  callback_data: JSON.stringify({
+                    data: "null",
+                    soli: "null",
+                    id_soli: id_soli,
+                  }),
+                },
+              ],
+            ],
+          },
+        });
+      }
+    }
 
     //Acciones
     if (data == "bCBA") {
