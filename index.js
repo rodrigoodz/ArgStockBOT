@@ -233,7 +233,7 @@ bot.onText(/\/opciones (.+)/, async (msg, match) => {
 //Mensaje de ayuda al escribir /ticker
 bot.onText(/\/ticker/, (msg, match) => {
   const comandos_array = match.input.trim().split(" ");
-  if (comandos_array.length === 1) {
+  if (comandos_array.length === 1 && comandos_array[0] === "/ticker") {
     enviarMensajeBorra1Min(msg.chat.id, getMsgAyudaTicker());
   }
 });
