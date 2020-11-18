@@ -86,12 +86,12 @@ bot.onText(/\/tickers/, (msg) => {
 
 //TODO mejorar el codigo, unificarlo
 bot.on("callback_query", async (accionboton) => {
-  const { data, ticker, id_solicitante } = JSON.parse(accionboton.data);
+  const { data, soli, id_soli } = JSON.parse(accionboton.data);
   const id_click = accionboton.from.id;
   const msg = accionboton.message;
 
   //verifico si quien tocó el boton fue el mismo que solicitó
-  if (id_click !== id_solicitante) {
+  if (id_click !== id_soli) {
     bot.answerCallbackQuery(accionboton.id, {
       text: "No sos quien solicitó el ticker",
       show_alert: true,
@@ -102,18 +102,18 @@ bot.on("callback_query", async (accionboton) => {
 
     //Acciones
     if (data == "bCBA") {
-      verCotizacion("bCBA", ticker, msg);
+      verCotizacion("bCBA", soli, msg);
     }
     if (data == "nYSE") {
-      verCotizacion("nYSE", ticker, msg);
+      verCotizacion("nYSE", soli, msg);
     }
 
     //Opciones
     if (data == "CALL") {
-      verOpciones("Call", "bCBA", ticker, msg);
+      verOpciones("Call", "bCBA", soli, msg);
     }
     if (data == "PUT") {
-      verOpciones("Put", "bCBA", ticker, msg);
+      verOpciones("Put", "bCBA", soli, msg);
     }
   }
 });
@@ -138,8 +138,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: accion_arg,
       callback_data: JSON.stringify({
         data: accion_arg,
-        ticker: ticker,
-        id_solicitante: msg.from.id,
+        soli: ticker,
+        id_soli: msg.from.id,
       }),
     });
   }
@@ -148,8 +148,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: accion_usa,
       callback_data: JSON.stringify({
         data: accion_usa,
-        ticker: ticker,
-        id_solicitante: msg.from.id,
+        soli: ticker,
+        id_soli: msg.from.id,
       }),
     });
   }
@@ -158,8 +158,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: "Cedear",
       callback_data: JSON.stringify({
         data: cedear,
-        ticker: ticker,
-        id_solicitante: msg.from.id,
+        soli: ticker,
+        id_soli: msg.from.id,
       }),
     });
   }
@@ -168,8 +168,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: "ADR",
       callback_data: JSON.stringify({
         data: adr,
-        ticker: ticker,
-        id_solicitante: msg.from.id,
+        soli: ticker,
+        id_soli: msg.from.id,
       }),
     });
   }
@@ -209,16 +209,16 @@ bot.onText(/\/opciones (.+)/, async (msg, match) => {
               text: "CALL",
               callback_data: JSON.stringify({
                 data: "CALL",
-                ticker: ticker,
-                id_solicitante: msg.from.id,
+                soli: ticker,
+                id_soli: msg.from.id,
               }),
             },
             {
               text: "PUT",
               callback_data: JSON.stringify({
                 data: "PUT",
-                ticker: ticker,
-                id_solicitante: msg.from.id,
+                soli: ticker,
+                id_soli: msg.from.id,
               }),
             },
           ],
