@@ -27,9 +27,11 @@ const {
   getMsgComandos,
   getMsgTickersArg,
   getLongitudTickersArg,
+  getLongitudTickersUsa,
   getMsgErrorTicker,
   getMsgAyudaTicker,
   getMsgErrorOpciones,
+  getMsgTickersUsa,
 } = require("./js/mensajesBot");
 
 //variables de entorno utilizada (referencia) - dejar comentado
@@ -79,7 +81,7 @@ bot.onText(/\/comandos/, (msg) => {
 
 //Comando /tickers para ver todas las empresas argentinas que cotizan en bolsa
 bot.onText(/\/tickers/, (msg) => {
-  bot.sendMessage(msg.chat.id, "seleccionar", {
+  bot.sendMessage(msg.chat.id, "Seleccionar", {
     reply_markup: {
       inline_keyboard: [
         [
@@ -94,8 +96,8 @@ bot.onText(/\/tickers/, (msg) => {
           {
             text: "NYSE",
             callback_data: JSON.stringify({
-              data: "NYSE",
-              soli: "NYSE",
+              data: "usa",
+              soli: "0",
               id_soli: msg.from.id,
             }),
           },
@@ -139,6 +141,43 @@ bot.on("callback_query", async (accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "M",
+                      soli: `${inicio + 5}`,
+                      id_soli: id_soli,
+                    }),
+                  },
+                  {
+                    text: "Cerrar",
+                    callback_data: JSON.stringify({
+                      data: "null",
+                      soli: "null",
+                      id_soli: id_soli,
+                    }),
+                  },
+                ],
+              ],
+            },
+          }
+        );
+      }
+    }
+
+    if (data == "usa") {
+      //nyse
+      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const msgTickersUsa = getMsgTickersUsa(inicio);
+      const longitudTickersUsa = getLongitudTickersUsa();
+      if (inicio < longitudTickersUsa) {
+        bot.sendMessage(
+          msg.chat.id,
+          `${msgTickersUsa}[${inicio}/${longitudTickersUsa}]`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "Mostrar Mas",
+                    callback_data: JSON.stringify({
+                      data: "usa",
                       soli: `${inicio + 5}`,
                       id_soli: id_soli,
                     }),
