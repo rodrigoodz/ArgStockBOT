@@ -26,6 +26,7 @@ const {
   getMsgStart,
   getMsgComandos,
   getMsgTickersArg,
+  getLongitudTickersArg,
   getMsgErrorTicker,
   getMsgAyudaTicker,
   getMsgErrorOpciones,
@@ -125,31 +126,36 @@ bot.on("callback_query", async (accionboton) => {
       //merval
       const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgTickersArg = getMsgTickersArg(inicio);
-      if (msgTickersArg.length !== 0) {
-        bot.sendMessage(msg.chat.id, msgTickersArg, {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: "Mostrar Mas",
-                  callback_data: JSON.stringify({
-                    data: "M",
-                    soli: `${inicio + 5}`,
-                    id_soli: id_soli,
-                  }),
-                },
-                {
-                  text: "Cerrar",
-                  callback_data: JSON.stringify({
-                    data: "null",
-                    soli: "null",
-                    id_soli: id_soli,
-                  }),
-                },
+      const longitudTickersArg = getLongitudTickersArg();
+      if (inicio < longitudTickersArg) {
+        bot.sendMessage(
+          msg.chat.id,
+          `${msgTickersArg}[${inicio}/${longitudTickersArg}]`,
+          {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: "Mostrar Mas",
+                    callback_data: JSON.stringify({
+                      data: "M",
+                      soli: `${inicio + 5}`,
+                      id_soli: id_soli,
+                    }),
+                  },
+                  {
+                    text: "Cerrar",
+                    callback_data: JSON.stringify({
+                      data: "null",
+                      soli: "null",
+                      id_soli: id_soli,
+                    }),
+                  },
+                ],
               ],
-            ],
-          },
-        });
+            },
+          }
+        );
       }
     }
 
