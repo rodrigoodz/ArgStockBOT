@@ -781,6 +781,24 @@ const bonos_arg = [
   "TX28",
 ];
 
+const fci_arg = [
+  "ADCGLOA - Adcap Renta Dolar / Clase D",
+  "ADRDOLA - Adcap Ahorro Pesos / Clase A",
+  "CNXPOPA - Adcap Pesos Plus / Clase A",
+  "CONIOLA - Adcap Iol Acciones Argentina / Clase A",
+  "CONRETO - Adcap Retorno Total / Clase A",
+  "CRTAFAA - Adcap Renta Fija Argentina / Clase A",
+  "PCOMAGB - Premier Commodities / Clase B",
+  "PRCPPEB - Premier Renta Corto Plazo Pesos / Clase B",
+  "PRERMDB - Premier Renta Mixta Dolares / Clase B",
+  "PRFAHOB - Premier Renta Fija / Clase B",
+  "PRGLBDB - Premier Global Dolares / Clase B",
+  "PRPEDOB - Premier Perfomance Dolares / Clase B",
+  "PRPLPEB - Premier Renta Plus Pesos / Clase B",
+  "PRREMIB - Premier Renta Mixta / Clase B",
+  "PRTAVAB - Premier Renta Variable / Clase B",
+];
+
 const error_ticker = `El ticker solicitado no existe o hubo un error, escriba el comando /tickers para ver la lista de tickers`;
 
 const error_opciones = `No hay opciones para el ticker solicitado o hubo un error`;
@@ -845,6 +863,21 @@ const getMsgBonosArg = (inicio) => {
   return text;
 };
 
+const getLongitudFCIs = () => {
+  return fci_arg.length;
+};
+const getMsgFCIs = (inicio) => {
+  let text = "";
+  const longitud = fci_arg.length;
+  for (let i = inicio; i < inicio + 10; i++) {
+    if (i == longitud) break;
+    text += `${fci_arg[i]}
+
+`;
+  }
+  return text;
+};
+
 const getMsgErrorTicker = () => {
   return error_ticker;
 };
@@ -870,4 +903,6 @@ module.exports = {
   getMsgErrorOpciones,
   getLongitudTickersArg,
   getMsgBonosArg,
+  getLongitudFCIs,
+  getMsgFCIs,
 };

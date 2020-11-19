@@ -34,6 +34,8 @@ const {
   getMsgErrorOpciones,
   getMsgTickersUsa,
   getMsgBonosArg,
+  getLongitudFCIs,
+  getMsgFCIs,
 } = require("./js/mensajesBot");
 
 //variables de entorno utilizada (referencia) - dejar comentado
@@ -107,6 +109,14 @@ bot.onText(/\/tickers/, (msg) => {
             text: "BONOS",
             callback_data: JSON.stringify({
               data: "bonos",
+              soli: "0",
+              id_soli: msg.from.id,
+            }),
+          },
+          {
+            text: "FCIs",
+            callback_data: JSON.stringify({
+              data: "fci",
               soli: "0",
               id_soli: msg.from.id,
             }),
@@ -209,7 +219,7 @@ bot.on("callback_query", async (accionboton) => {
     }
 
     if (data == "bonos") {
-      //nyse
+      //bonos
       const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgBonosArg = getMsgBonosArg(inicio);
       const longitudBonosArg = getLongitudBonosArg();
@@ -242,6 +252,39 @@ bot.on("callback_query", async (accionboton) => {
             },
           }
         );
+      }
+    }
+
+    if (data == "fci") {
+      //bonos
+      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const msgFCIs = getMsgFCIs(inicio);
+      const longitudFCIs = getLongitudFCIs();
+      if (inicio < longitudFCIs) {
+        bot.sendMessage(msg.chat.id, `${msgFCIs}[${inicio}/${longitudFCIs}]`, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "Mostrar Mas",
+                  callback_data: JSON.stringify({
+                    data: "fci",
+                    soli: `${inicio + 5}`,
+                    id_soli: id_soli,
+                  }),
+                },
+                {
+                  text: "Cerrar",
+                  callback_data: JSON.stringify({
+                    data: "null",
+                    soli: "null",
+                    id_soli: id_soli,
+                  }),
+                },
+              ],
+            ],
+          },
+        });
       }
     }
 
