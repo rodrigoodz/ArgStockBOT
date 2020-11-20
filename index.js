@@ -37,6 +37,7 @@ const {
   getLongitudFCIs,
   getMsgFCIs,
 } = require("./js/mensajesBot");
+const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -56,6 +57,27 @@ const bot_id = process.env.BOT_ID;
 //server
 const port = process.env.PORT || 3000;
 const app = express();
+
+//comando /btc para obtener precio actualizado del bitcoin
+
+bot.onText(/\/btc/, async (msg) => {
+  const { tiempo, precio } = await getPrecioBitcoinUsd();
+  const dia = tiempo.getDate();
+  const mes = tiempo.getMonth();
+  const hora = tiempo.getUTCHours() - 3;
+  const min = tiempo.getUTCMinutes();
+
+  bot.sendMessage(
+    msg.chat.id,
+    `<b>[Bitcoin]</b> 
+Precio: ${precio} USD
+<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
+`,
+    {
+      parse_mode: "HTML",
+    }
+  );
+});
 
 //comando /global (enviar mensaje a todos los grupos donde el bot pertenezca, util por si quiero informar algo)
 bot.onText(/\/global (.+)/, (msg, match) => {
