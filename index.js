@@ -622,7 +622,7 @@ const enviarMensajeBorra1Min = (chat_id, mensaje) => {
       //despues de 2 minutos borro el mensaje de todos los grupos
       setTimeout(() => {
         bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
-      }, 3000);
+      }, 30000);
     });
 };
 
