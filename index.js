@@ -58,8 +58,91 @@ const bot_id = process.env.BOT_ID;
 const port = process.env.PORT || 3000;
 const app = express();
 
-//comando /btc para obtener precio actualizado del bitcoin
+///comando /graf {ticker} {ruedas} -> obtener
+// bot.onText(/\/graf (.+)/, (msg, match) => {
+//   const ticker = match[1].split(" ")[0];
+//   const ruedas = match[1].split(" ")[1];
 
+//   let botones = [];
+//   const accion_arg = es_accion_arg(ticker);
+//   const accion_usa = es_accion_usa(ticker);
+//   const cedear = es_cedears(ticker);
+
+//   if (accion_arg) {
+//     botones.push({
+//       text: accion_arg,
+//       callback_data: JSON.stringify({
+//         data: "gArg",
+//         sol: `${ticker} ${ruedas} arg`,
+//         id: msg.from.id,
+//       }),
+//     });
+//   }
+//   if (accion_usa) {
+//     botones.push({
+//       text: accion_usa,
+//       callback_data: JSON.stringify({
+//         data: "gUsa",
+//         sol: `${ticker} ${ruedas}`,
+//         id: msg.from.id,
+//       }),
+//     });
+//   }
+//   if (cedear) {
+//     botones.push({
+//       text: "Cedear",
+//       callback_data: JSON.stringify({
+//         data: "gArg",
+//         sol: `${ticker} ${ruedas}`,
+//         id: msg.from.id,
+//       }),
+//     });
+//   }
+
+//   //solo voy a mostrar botones si el ticker está en más de un mercado
+//   const tipo = [accion_arg, accion_usa, cedear].filter((elemento) => {
+//     return elemento != undefined;
+//   });
+
+//   //
+//   // if (tipo.length > 1) {
+//   //   bot.sendMessage(msg.chat.id, "Seleccionar", {
+//   //     reply_markup: {
+//   //       inline_keyboard: [botones],
+//   //     },
+//   //   });
+//   // } else if (tipo.length === 1) {
+//   //   //si esta en solo 1, no muestro botones y obtengo la cotizacion directamente
+//   //   verCotizacion(tipo[0], ticker, msg);
+//   // } else if (tipo.length == 0) {
+//   //   //si no esta en ninguno, puede ser igual un ticker argentino(o que no exista)
+//   //   verCotizacion("bCBA", ticker, msg);
+//   // }
+//   // --------------------------
+//   //si esta en mas de 1, muestro botones
+//   if (tipo.length > 1 && Number(ruedas) > 0) {
+//     bot.sendMessage(msg.chat.id, "Seleccionar", {
+//       reply_markup: {
+//         inline_keyboard: [botones],
+//       },
+//     });
+//   } else if (tipo.length === 1) {
+//     console.log("solo estaba en 1");
+//     if (accion_arg || cedear) {
+//       botonesLi neasYVelas("arg", msg, ticker, ruedas, msg.from.id);
+//     } else {
+//       botonesLineasYVelas("usa", msg, ticker, ruedas, msg.from.id);
+//     }
+//   } else {
+//     const msgErrorGraf = getMsgErrorGraf();
+//     bot.sendMessage(msg.chat.id, msgErrorGraf, { parse_mode: "HTML" });
+//   }
+//   //TODO permitir que pueda seleccionar linea o velas, y si tiene ema o algo de eso
+
+//   //https://stackoverflow.com/questions/61231440/advanced-accessible-chart-highchart-highcharts-export-server
+// });
+
+//comando /btc para obtener precio actualizado del bitcoin
 bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
   const dia = tiempo.getDate();
@@ -158,7 +241,7 @@ bot.on("callback_query", async (accionboton) => {
   //verifico si quien tocó el boton fue el mismo que solicitó
   if (id_click !== id_soli) {
     bot.answerCallbackQuery(accionboton.id, {
-      text: "No sos quien solicitó el ticker",
+      text: "No sos quien solicitó la informacion",
       show_alert: true,
     });
   } else {
