@@ -147,14 +147,14 @@ bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
   const dia = tiempo.getDate();
   const mes = tiempo.getMonth();
-  const hora = tiempo.getUTCHours() - 3;
+  const hora = tiempo.getUTCHours();
   const min = tiempo.getUTCMinutes();
 
   bot.sendMessage(
     msg.chat.id,
     `<b>[Bitcoin]</b> 
 Precio: ${precio} USD
-<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
+<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs UTC</i></u>
 `,
     {
       parse_mode: "HTML",
