@@ -5,7 +5,7 @@ const getPrecioBitcoinUsd = async () => {
   await BitcoinValue.current("USD")
     .then((data) => {
       const tiempo = new Date(data.time.updatedISO);
-      const precio = data.bpi.USD.rate.replace(",", "");
+      const precio = data.bpi.USD.rate_float;
       btc = { tiempo, precio };
     })
     .catch((err) => {

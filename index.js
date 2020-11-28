@@ -145,16 +145,20 @@ const app = express();
 //comando /btc para obtener precio actualizado del bitcoin
 bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
-  const dia = tiempo.getDate();
-  const mes = tiempo.getMonth();
-  const hora = tiempo.getUTCHours();
-  const min = tiempo.getUTCMinutes();
+  tiempo.setHours(tiempo.getUTCHours() - 3);
+  const dia = tiempo.getUTCDate();
+  const mes = tiempo.getUTCMonth();
+  const hora = tiempo.getHours();
+  let min;
+  tiempo.getUTCMinutes() < 10
+    ? (min = "0" + tiempo.getUTCMinutes())
+    : (min = tiempo.getUTCMinutes());
 
   bot.sendMessage(
     msg.chat.id,
     `<b>[Bitcoin]</b> 
 Precio: ${precio} USD
-<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs UTC</i></u>
+<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
 `,
     {
       parse_mode: "HTML",
