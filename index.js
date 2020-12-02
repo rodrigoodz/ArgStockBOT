@@ -693,6 +693,9 @@ const verCotizacion = async (mercado, ticker, msg) => {
     Cierre Anterior: <b>${cierreAnterior} ${moneda}$</b>
     Rango día: <b>${minimo} ${moneda}$</b> - <b>${maximo} ${moneda}$</b>
     Ganancia/Perdida: <b>${variacion_fixed}%</b>`;
+    const mensaje_accion_premercado = `<b>${ticker.toUpperCase()}</b>
+    Precio Actual: <b>${ultimoPrecio} ${moneda}$</b>
+    Rango día: <b>${minimo} ${moneda}$</b> - <b>${maximo} ${moneda}$</b>`;
     if (
       hora_actual >= 11 &&
       hora_actual <= 18 &&
@@ -702,9 +705,15 @@ const verCotizacion = async (mercado, ticker, msg) => {
       mensajeTicker = `<i>[Datos del ${dia}/${mes} -- ${hora}:${min}hs]</i>
     ${mensaje_accion}`;
     } else {
-      //en cualquier otro caso muestro los ultimos datos del mercado
-      mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>
+      //agregado para mostrar dia anterior si estamos entre las 8 y las 11
+      if (hora_actual >= 7 && hora_actual < 11) {
+        mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia - 1}/${mes}]</i>
+    ${mensaje_accion_premercado}`;
+      } else {
+        //en cualquier otro caso muestro los ultimos datos del mercado
+        mensajeTicker = `<i>[Mercado Cerrado. Datos del ${dia}/${mes}]</i>
     ${mensaje_accion}`;
+      }
     }
     //envio el mensaje correspondiente
     enviarMensajeSinBorrar(msg.chat.id, mensajeTicker);
