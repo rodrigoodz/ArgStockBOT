@@ -807,6 +807,8 @@ const error_ticker = `El ticker solicitado no existe o hubo un error, escriba el
 
 const error_opciones = `No hay opciones para el ticker solicitado o hubo un error`;
 
+const mensaje_error_forex = `Error al solicitar la informacion, escriba /forex {divisas}`;
+
 const mensaje_ayuda_ticker = `<pre>Recuerda utilizar el comando 
 /ticker (ticker_argentino)
 Ejemplo: /ticker ypfd</pre>`;
@@ -814,6 +816,10 @@ Ejemplo: /ticker ypfd</pre>`;
 const mensaje_ayuda_opciones = `<pre>Recuerda utilizar el comando 
 /opciones (ticker_argentino)
 Ejemplo: /opciones ggal</pre>`;
+
+const mensaje_ayuda_forex = `<pre>Recuerda utilizar el comando 
+/forex (divisas)
+Ejemplo: /forex eurusd</pre>`;
 
 const getMsgAbout = () => {
   return about;
@@ -890,12 +896,20 @@ const getMsgErrorTicker = () => {
   return error_ticker;
 };
 
+const getMsgErrorForex = () => {
+  return mensaje_error_forex;
+};
+
 const getMsgErrorOpciones = () => {
   return error_opciones;
 };
 
 const getMsgAyudaTicker = () => {
   return mensaje_ayuda_ticker;
+};
+
+const getMsgAyudaForex = () => {
+  return mensaje_ayuda_forex;
 };
 
 const getMsgAyudaOpciones = () => {
@@ -918,4 +932,6 @@ module.exports = {
   getMsgBonosArg,
   getLongitudFCIs,
   getMsgFCIs,
+  getMsgAyudaForex,
+  getMsgErrorForex,
 };

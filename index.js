@@ -20,6 +20,7 @@ const {
   es_cedears,
   es_adr,
   es_opcion,
+  es_forex,
 } = require("./js/tipoTicker");
 const {
   getMsgAbout,
@@ -37,9 +38,12 @@ const {
   getMsgBonosArg,
   getLongitudFCIs,
   getMsgFCIs,
+  getMsgAyudaForex,
+  getMsgErrorForex,
 } = require("./js/mensajesBot");
 const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
 const { getDataDolar } = require("./js/webscrapingDolar");
+const { getDataForex } = require("./js/obtenerDataForex");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -143,6 +147,55 @@ const app = express();
 
 //   //https://stackoverflow.com/questions/61231440/advanced-accessible-chart-highchart-highcharts-export-server
 // });
+
+//Mensaje de ayuda al escribir /forex
+bot.onText(/\/forex/, (msg, match) => {
+  const comandos_array = match.input.trim().split(" ");
+  if (comandos_array.length === 1 && comandos_array[0] === "/forex") {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgAyudaForex());
+  }
+});
+
+//TODO agregar comando a /comandos y /start
+bot.onText(/\/forex (.+)/, async (msg, match) => {
+  const divisas = match[1].split(" ")[0].toUpperCase();
+
+  const forex = es_forex(divisas);
+  if (forex) {
+    const dataForex = await getDataForex(divisas);
+    const { rate, timestamp } = dataForex;
+
+    const date = new Date(timestamp * 1000);
+
+    date.setHours(date.getUTCHours() - 3);
+    const mes = date.getUTCMonth();
+    let min;
+    date.getUTCMinutes() < 10
+      ? (min = "0" + date.getUTCMinutes())
+      : (min = date.getUTCMinutes());
+    let dia;
+    date.getUTCDate() < 10
+      ? (dia = "0" + date.getUTCDate())
+      : (dia = date.getUTCDate());
+    let hora;
+    date.getHours() < 10
+      ? (hora = "0" + date.getHours())
+      : (hora = date.getHours());
+
+    bot.sendMessage(
+      msg.chat.id,
+      `<b>[${divisas}]</b> 
+  Precio: ${rate} USD
+  <u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
+    `,
+      {
+        parse_mode: "HTML",
+      }
+    );
+  } else {
+    bot.sendMessage(msg.chat.id, getMsgErrorForex(), { parse_mode: "HTML" });
+  }
+});
 
 //comando /btc para obtener precio actualizado del bitcoin
 bot.onText(/\/btc/, async (msg) => {
