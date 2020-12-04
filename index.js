@@ -31,6 +31,7 @@ const {
   getLongitudBonosArg,
   getMsgErrorTicker,
   getMsgAyudaTicker,
+  getMsgAyudaOpciones,
   getMsgErrorOpciones,
   getMsgTickersUsa,
   getMsgBonosArg,
@@ -496,6 +497,14 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
   } else if (tipo.length == 0) {
     //si no esta en ninguno, puede ser igual un ticker argentino(o que no exista)
     verCotizacion("bCBA", ticker, msg);
+  }
+});
+
+//Mensaje de ayuda al escribir /opciones
+bot.onText(/\/opciones/, (msg, match) => {
+  const comandos_array = match.input.trim().split(" ");
+  if (comandos_array.length === 1 && comandos_array[0] === "/opciones") {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgAyudaOpciones());
   }
 });
 

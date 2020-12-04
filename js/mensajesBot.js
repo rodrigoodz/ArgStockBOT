@@ -811,6 +811,10 @@ const mensaje_ayuda_ticker = `<pre>Recuerda utilizar el comando
 /ticker (ticker_argentino)
 Ejemplo: /ticker ypfd</pre>`;
 
+const mensaje_ayuda_opciones = `<pre>Recuerda utilizar el comando 
+/opciones (ticker_argentino)
+Ejemplo: /opciones ggal</pre>`;
+
 const getMsgAbout = () => {
   return about;
 };
@@ -894,6 +898,10 @@ const getMsgAyudaTicker = () => {
   return mensaje_ayuda_ticker;
 };
 
+const getMsgAyudaOpciones = () => {
+  return mensaje_ayuda_opciones;
+};
+
 module.exports = {
   getMsgAbout,
   getMsgStart,
@@ -904,6 +912,7 @@ module.exports = {
   getLongitudBonosArg,
   getMsgErrorTicker,
   getMsgAyudaTicker,
+  getMsgAyudaOpciones,
   getMsgErrorOpciones,
   getLongitudTickersArg,
   getMsgBonosArg,
