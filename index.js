@@ -38,6 +38,7 @@ const {
   getMsgFCIs,
 } = require("./js/mensajesBot");
 const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
+const { getDataDolar } = require("./js/webscrapingDolar");
 
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
@@ -536,30 +537,38 @@ bot.onText(/\/ticker/, (msg, match) => {
 });
 
 //Comando /dolar -> utilizo la informacion de Bluelytics
-bot.onText(/\/dolar/, (msg) => {
-  Bluelytics.get().then((result) => {
-    const { oficial, blue, last_update } = result;
-    const [, mes, dia] = last_update.trim().split("T")[0].trim().split("-");
-    const [hora, min] = last_update
-      .trim()
-      .split("T")[1]
-      .trim()
-      .split(".")[0]
-      .trim()
-      .split(":");
+bot.onText(/\/dolar/, async (msg) => {
+  const dataDolar = await getDataDolar();
+
+  if (dataDolar) {
+    const { compra: cOficial, venta: vOficial } = dataDolar.oficial;
+    const { compra: cBlue, venta: vBlue } = dataDolar.blue;
+    const { compra: cBolsa, venta: vBolsa } = dataDolar.bolsa;
+    const { compra: cCCL, venta: vCCL } = dataDolar.ccl;
+    const { venta: vSolidario } = dataDolar.solidario;
     bot.sendMessage(
       msg.chat.id,
-      `<b>[Oficial]</b> 
-Venta: ${oficial.value_sell} ARS // Compra: ${oficial.value_buy} ARS
-<b>[Blue]</b>
-Venta: ${blue.value_sell} ARS // Compra: ${blue.value_buy} ARS
-<u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
-`,
+      `<b>[Oficial]</b>
+  Compra: ${cOficial} ARS // Venta: ${vOficial} ARS
+  <b>[Blue]</b>
+  Compra: ${cBlue} ARS // Venta: ${vBlue} ARS
+  <b>[Bolsa]</b>
+  Compra: ${cBolsa} ARS // Venta: ${vBolsa} ARS
+  <b>[CCL]</b>
+  Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
+  <b>[Solidario]</b>
+  Venta: ${vSolidario} ARS 
+  <u>${dataDolar.hora_refresh}hs</u>    `,
       {
         parse_mode: "HTML",
       }
     );
-  });
+  } else {
+    enviarMensajeBorra1Min(
+      msg.chat.id,
+      "Hubo un error al obtener la informacion"
+    );
+  }
 });
 
 //comando /about para ver información acerca del bot
