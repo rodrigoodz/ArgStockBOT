@@ -147,13 +147,19 @@ const app = express();
 bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
   tiempo.setHours(tiempo.getUTCHours() - 3);
-  const dia = tiempo.getUTCDate();
   const mes = tiempo.getUTCMonth();
-  const hora = tiempo.getHours();
   let min;
   tiempo.getUTCMinutes() < 10
     ? (min = "0" + tiempo.getUTCMinutes())
     : (min = tiempo.getUTCMinutes());
+  let dia;
+  tiempo.getUTCDate() < 10
+    ? (dia = "0" + tiempo.getUTCDate())
+    : (dia = tiempo.getUTCDate());
+  let hora;
+  tiempo.getHours() < 10
+    ? (hora = "0" + tiempo.getHours())
+    : (hora = tiempo.getHours());
 
   bot.sendMessage(
     msg.chat.id,
