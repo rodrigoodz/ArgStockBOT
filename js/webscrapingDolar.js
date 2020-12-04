@@ -6,7 +6,9 @@ const { JSDOM } = jsdom;
 const getDataDolar = async () => {
   try {
     //entramos a la pagina mediante puppeteer
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     const response = await page.goto("https://www.dolarhoy.com/");
     const body = await response.text();
