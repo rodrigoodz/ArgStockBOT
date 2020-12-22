@@ -606,6 +606,11 @@ bot.onText(/\/ticker/, (msg, match) => {
 
 //Comando /dolar -> utilizo la informacion de Bluelytics
 bot.onText(/\/dolar/, async (msg) => {
+  bot.sendMessage(msg.chat.id, "Obteniendo informacion...").then((mensaje) => {
+    setTimeout(() => {
+      bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+    }, 2000);
+  });
   const dataDolar = await getDataDolar();
 
   if (dataDolar) {
