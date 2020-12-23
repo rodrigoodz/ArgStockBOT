@@ -158,11 +158,11 @@ bot.onText(/\/forex/, (msg, match) => {
 
 //TODO agregar comando a /comandos y /start
 bot.onText(/\/forex (.+)/, async (msg, match) => {
-  const divisas = match[1].split(" ")[0].toUpperCase();
+  const divisas = match[1].split(" ")[0];
 
   const forex = es_forex(divisas);
   if (forex) {
-    const dataForex = await getDataForex(divisas);
+    const dataForex = await getDataForex(divisas.toUpperCase());
     const { rate, timestamp } = dataForex;
 
     const date = new Date(timestamp * 1000);
@@ -184,7 +184,7 @@ bot.onText(/\/forex (.+)/, async (msg, match) => {
 
     bot.sendMessage(
       msg.chat.id,
-      `<b>[${divisas}]</b> 
+      `<b>[${divisas.toUpperCase()}]</b> 
   Precio: ${rate} USD
   <u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
     `,
