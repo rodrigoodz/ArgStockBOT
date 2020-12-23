@@ -40,11 +40,13 @@ const {
   getMsgFCIs,
   getMsgAyudaForex,
   getMsgErrorForex,
+  getMsgAyudaIdea,
+  getMsgErrorIdea,
 } = require("./js/mensajesBot");
 const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
 const { getDataDolar } = require("./js/webscrapingDolar");
 const { getDataForex } = require("./js/obtenerDataForex");
-
+const { getIdea } = require("./js/webscrapingIdeasTD");
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
 // BOT_TOKEN=(token_botfather)
@@ -147,6 +149,86 @@ const app = express();
 
 //   //https://stackoverflow.com/questions/61231440/advanced-accessible-chart-highchart-highcharts-export-server
 // });
+
+//Mensaje de ayuda al escribir /idea
+bot.onText(/\/idea/, (msg, match) => {
+  const comandos_array = match.input.trim().split(" ");
+  if (comandos_array.length === 1 && comandos_array[0] === "/idea") {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgAyudaIdea());
+  }
+});
+
+//obtener ultima idea de tradingview para un ticker dado
+bot.onText(/\/idea (.+)/, async (msg, match) => {
+  const ticker = match[1].split(" ")[0].toLowerCase();
+
+  const array = [
+    es_accion_arg(ticker),
+    es_accion_usa(ticker),
+    es_forex(ticker),
+  ];
+
+  //si hay algo undefined busco, sino envio mensaje error
+  const hay_data = array.findIndex((e) => {
+    return e != undefined;
+  });
+
+  let titulo, descripcion, link, autor, date;
+  if (hay_data !== -1) {
+    switch (hay_data) {
+      case 0:
+        ({ titulo, descripcion, link, autor, date } = await getIdea(
+          ticker,
+          "BCBA"
+        ));
+        break;
+      case 1:
+        ({ titulo, descripcion, link, autor, date } = await getIdea(
+          ticker,
+          "NASDAQ"
+        ));
+        break;
+      case 2:
+        ({ titulo, descripcion, link, autor, date } = await getIdea(ticker));
+        break;
+    }
+
+    date.setHours(date.getUTCHours() - 3);
+    const mes = date.getUTCMonth();
+    let min;
+    date.getUTCMinutes() < 10
+      ? (min = "0" + date.getUTCMinutes())
+      : (min = date.getUTCMinutes());
+    let dia;
+    date.getUTCDate() < 10
+      ? (dia = "0" + date.getUTCDate())
+      : (dia = date.getUTCDate());
+    let hora;
+    date.getHours() < 10
+      ? (hora = "0" + date.getHours())
+      : (hora = date.getHours());
+
+    bot.sendPhoto(msg.chat.id, link).then(() => {
+      bot.sendMessage(
+        msg.chat.id,
+        `<b>${titulo}</b>
+${descripcion}
+<i>Autor: <b>${autor}</b></i>
+<u><i>Fecha: ${dia}/${mes} -- ${hora}:${min}hs</i></u>
+<a href="${link}">Link</a>
+        `,
+        {
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+        }
+      );
+    });
+  } else {
+    bot.sendMessage(msg.chat.id, getMsgErrorIdea(), {
+      parse_mode: "HTML",
+    });
+  }
+});
 
 //Mensaje de ayuda al escribir /forex
 bot.onText(/\/forex/, (msg, match) => {
