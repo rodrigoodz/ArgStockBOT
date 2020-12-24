@@ -18,32 +18,45 @@ const getIdea = async (ticker, mercado) => {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
-    const response = await page.goto(pagina);
-    const body = await response.text();
+    let response = await page.goto(pagina);
+    let body = await response.text();
     // 'parseamos' con JSDOM
     const { document } = new JSDOM(body).window;
 
     //extraigo lo que necesito
-    const ideas = document.querySelector(".tv-widget-idea");
-    const link =
+    let ideas = document.querySelector(".tv-widget-idea");
+    let link, titulo, descripcion, imagen, fecha, date;
+
+    //si el ticker no es de NASDAQ, me fijo en NYSE
+    if (ideas == null) {
+      response = await page.goto(
+        `https://es.tradingview.com/symbols/NYSE-${ticker}/ideas/`
+      );
+      body = await response.text();
+      // 'parseamos' con JSDOM
+      const { document } = new JSDOM(body).window;
+      ideas = document.querySelector(".tv-widget-idea");
+    }
+
+    link =
       "https://es.tradingview.com" +
       ideas.querySelector(".tv-widget-idea__title-row a").getAttribute("href");
-    const titulo = ideas
+    titulo = ideas
       .querySelector(".tv-widget-idea__title-row")
       .textContent.trim(" ");
-    const autor = ideas.querySelector(".tv-card-user-info__name").textContent;
-    const descripcion = ideas
+    autor = ideas.querySelector(".tv-card-user-info__name").textContent;
+    descripcion = ideas
       .querySelector(".tv-widget-idea__description-row")
       .textContent.trim("\t");
-    const fecha = ideas
+    fecha = ideas
       .querySelector(".tv-card-stats .tv-card-stats__time")
       .getAttribute("data-timestamp");
-    const imagen = ideas
+    imagen = ideas
       .querySelector(
         ".tv-widget-idea__cover-wrap .tv-widget-idea__cover-link picture img"
       )
       .getAttribute("data-src");
-    const date = new Date(Number(fecha) * 1000);
+    date = new Date(Number(fecha) * 1000);
 
     await browser.close();
 
