@@ -283,7 +283,7 @@ bot.onText(/\/forex (.+)/, async (msg, match) => {
 bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
   tiempo.setHours(tiempo.getUTCHours() - 3);
-  const mes = tiempo.getUTCMonth();
+  const mes = tiempo.getUTCMonth() + 1;
   let min;
   tiempo.getUTCMinutes() < 10
     ? (min = "0" + tiempo.getUTCMinutes())
