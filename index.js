@@ -172,6 +172,12 @@ bot.onText(/\/idea/, (msg, match) => {
 bot.onText(/\/idea (.+)/, async (msg, match) => {
   const ticker = match[1].split(" ")[0].toLowerCase();
 
+  bot.sendMessage(msg.chat.id, "Obteniendo informacion...").then((mensaje) => {
+    setTimeout(() => {
+      bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+    }, 4000);
+  });
+
   const array = [
     es_accion_arg(ticker),
     es_accion_usa(ticker),
