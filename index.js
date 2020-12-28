@@ -836,7 +836,7 @@ bot.onText(/\/dolar/, async (msg) => {
     const { compra: cBlue, venta: vBlue } = dataDolar.blue;
     const { compra: cBolsa, venta: vBolsa } = dataDolar.bolsa;
     const { compra: cCCL, venta: vCCL } = dataDolar.ccl;
-    const { venta: vsoldario } = dataDolar.soldario;
+    const { venta: vsolidario } = dataDolar.solidario;
     bot.sendMessage(
       msg.chat.id,
       `<b>[Oficial]</b>
@@ -848,7 +848,7 @@ bot.onText(/\/dolar/, async (msg) => {
   <b>[CCL]</b>
   Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
   <b>[soldario]</b>
-  Venta: ${vsoldario} ARS 
+  Venta: ${vsolidario} ARS 
   <u>${dataDolar.hora_refresh}hs</u>    `,
       {
         parse_mode: "HTML",
