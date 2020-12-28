@@ -16,7 +16,6 @@
     "express": "^4.17.1",
     "firebase-admin": "^9.2.0",
     "jsdom": "^16.4.0",
-    "node-bluelytics": "^1.0.3",
     "node-telegram-bot-api": "^0.50.0",
     "puppeteer": "^5.5.0",
     "woke-dyno": "0.0.4"
