@@ -137,7 +137,7 @@ bot.onText(/\/graf (.+)/, (msg, match) => {
         },
       });
     }
-  } else if (tipo.length === 1 && ruedas) {
+  } else if (tipo.length === 1 && Number(ruedas) > 0) {
     //si el ticker esta en un solo mercado, muestro directamente botones
     if (Number(ruedas) > 500) {
       //si escribio > 500 ruedas
