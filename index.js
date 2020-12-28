@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const wakeDyno = require("woke-dyno");
 const TelegramBot = require("node-telegram-bot-api");
-const Bluelytics = require("node-bluelytics");
 const { informeApertura } = require("./js/InformeAperturaCierre");
 const iol = require("./js/node-iol");
 const { deleteDBFirebase, setDBFirebase } = require("./js/ControladorFirebase");
@@ -35,6 +34,7 @@ const {
   getMsgAyudaOpciones,
   getMsgErrorOpciones,
   getMsgTickersUsa,
+  getMsgAyudaGraf,
   getMsgBonosArg,
   getLongitudFCIs,
   getMsgFCIs,
@@ -42,11 +42,13 @@ const {
   getMsgErrorForex,
   getMsgAyudaIdea,
   getMsgErrorIdea,
+  getMsgErrorGraf,
 } = require("./js/mensajesBot");
 const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
 const { getDataDolar } = require("./js/webscrapingDolar");
 const { getDataForex } = require("./js/obtenerDataForex");
 const { getIdea } = require("./js/webscrapingIdeasTD");
+const { lineChart, candlestickChart } = require("./js/graficosTicker");
 //variables de entorno utilizada (referencia) - dejar comentado
 // NTBA_FIX_319=1 -> solucion a error que generaba el modulo node-telegram-bot-api
 // BOT_TOKEN=(token_botfather)
@@ -54,7 +56,6 @@ const { getIdea } = require("./js/webscrapingIdeasTD");
 // ORRA_ID=(id_grupo_logs) -> recibo alertas del bot y como interactua con las personas que lo utilizan
 // ORRA_ID_PRIV=(id_propio_telegram)
 // DYNO_URL=(sitio_web_heroku)"
-
 // node-telegram-bot-api
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
@@ -66,89 +67,98 @@ const bot_id = process.env.BOT_ID;
 const port = process.env.PORT || 3000;
 const app = express();
 
-///comando /graf {ticker} {ruedas} -> obtener
-// bot.onText(/\/graf (.+)/, (msg, match) => {
-//   const ticker = match[1].split(" ")[0];
-//   const ruedas = match[1].split(" ")[1];
+//Mensaje de ayuda al escribir /graf
+bot.onText(/\/graf/, (msg, match) => {
+  const comandos_array = match.input.trim().split(" ");
+  if (comandos_array.length === 1 && comandos_array[0] === "/graf") {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgAyudaGraf());
+  }
+});
 
-//   let botones = [];
-//   const accion_arg = es_accion_arg(ticker);
-//   const accion_usa = es_accion_usa(ticker);
-//   const cedear = es_cedears(ticker);
+bot.onText(/\/graf (.+)/, (msg, match) => {
+  const ticker = match[1].split(" ")[0];
+  const ruedas = match[1].split(" ")[1];
 
-//   if (accion_arg) {
-//     botones.push({
-//       text: accion_arg,
-//       callback_data: JSON.stringify({
-//         data: "gArg",
-//         sol: `${ticker} ${ruedas} arg`,
-//         id: msg.from.id,
-//       }),
-//     });
-//   }
-//   if (accion_usa) {
-//     botones.push({
-//       text: accion_usa,
-//       callback_data: JSON.stringify({
-//         data: "gUsa",
-//         sol: `${ticker} ${ruedas}`,
-//         id: msg.from.id,
-//       }),
-//     });
-//   }
-//   if (cedear) {
-//     botones.push({
-//       text: "Cedear",
-//       callback_data: JSON.stringify({
-//         data: "gArg",
-//         sol: `${ticker} ${ruedas}`,
-//         id: msg.from.id,
-//       }),
-//     });
-//   }
+  //consulto tipo accion y armo botones para seleccionar tipo
+  let botones = [];
+  const accion_arg = es_accion_arg(ticker);
+  const accion_usa = es_accion_usa(ticker);
+  const cedear = es_cedears(ticker);
+  if (accion_arg) {
+    botones.push({
+      text: accion_arg,
+      callback_data: JSON.stringify({
+        data: "gArg",
+        sol: `${ticker} ${ruedas} arg`,
+        id: msg.from.id,
+      }),
+    });
+  }
+  if (accion_usa) {
+    botones.push({
+      text: accion_usa,
+      callback_data: JSON.stringify({
+        data: "gUsa",
+        sol: `${ticker} ${ruedas}`,
+        id: msg.from.id,
+      }),
+    });
+  }
+  if (cedear) {
+    botones.push({
+      text: "Cedear",
+      callback_data: JSON.stringify({
+        data: "gArg",
+        sol: `${ticker} ${ruedas}`,
+        id: msg.from.id,
+      }),
+    });
+  }
 
-//   //solo voy a mostrar botones si el ticker está en más de un mercado
-//   const tipo = [accion_arg, accion_usa, cedear].filter((elemento) => {
-//     return elemento != undefined;
-//   });
+  //solo voy a mostrar botones si el ticker está en más de un mercado
+  const tipo = [accion_arg, accion_usa, cedear].filter((elemento) => {
+    return elemento != undefined;
+  });
 
-//   //
-//   // if (tipo.length > 1) {
-//   //   bot.sendMessage(msg.chat.id, "Seleccionar", {
-//   //     reply_markup: {
-//   //       inline_keyboard: [botones],
-//   //     },
-//   //   });
-//   // } else if (tipo.length === 1) {
-//   //   //si esta en solo 1, no muestro botones y obtengo la cotizacion directamente
-//   //   verCotizacion(tipo[0], ticker, msg);
-//   // } else if (tipo.length == 0) {
-//   //   //si no esta en ninguno, puede ser igual un ticker argentino(o que no exista)
-//   //   verCotizacion("bCBA", ticker, msg);
-//   // }
-//   // --------------------------
-//   //si esta en mas de 1, muestro botones
-//   if (tipo.length > 1 && Number(ruedas) > 0) {
-//     bot.sendMessage(msg.chat.id, "Seleccionar", {
-//       reply_markup: {
-//         inline_keyboard: [botones],
-//       },
-//     });
-//   } else if (tipo.length === 1) {
-//     console.log("solo estaba en 1");
-//     if (accion_arg || cedear) {
-//       botonesLi neasYVelas("arg", msg, ticker, ruedas, msg.from.id);
-//     } else {
-//       botonesLineasYVelas("usa", msg, ticker, ruedas, msg.from.id);
-//     }
-//   } else {
-//     const msgErrorGraf = getMsgErrorGraf();
-//     bot.sendMessage(msg.chat.id, msgErrorGraf, { parse_mode: "HTML" });
-//   }
-//   //TODO permitir que pueda seleccionar linea o velas, y si tiene ema o algo de eso
-
-//   //https://stackoverflow.com/questions/61231440/advanced-accessible-chart-highchart-highcharts-export-server
-// });
+  //si esta en mas de 1, muestro botones
+  if (tipo.length > 1 && Number(ruedas) > 0) {
+    if (Number(ruedas) > 500) {
+      //si escribio > 500 ruedas
+      bot.sendMessage(
+        msg.chat.id,
+        "Ingresar un cantidad de ruedas menor a 500",
+        { parse_mode: "HTML" }
+      );
+    } else {
+      //sino muestro botones
+      bot.sendMessage(msg.chat.id, "Seleccionar", {
+        reply_markup: {
+          inline_keyboard: [botones],
+        },
+      });
+    }
+  } else if (tipo.length === 1 && ruedas) {
+    //si el ticker esta en un solo mercado, muestro directamente botones
+    if (Number(ruedas) > 500) {
+      //si escribio > 500 ruedas
+      bot.sendMessage(
+        msg.chat.id,
+        "Ingresar un cantidad de ruedas menor a 500",
+        { parse_mode: "HTML" }
+      );
+    } else {
+      //sino muestro botones
+      if (accion_arg || cedear) {
+        botonesLineasYVelas("arg", msg, ticker, ruedas, msg.from.id);
+      } else {
+        botonesLineasYVelas("usa", msg, ticker, ruedas, msg.from.id);
+      }
+    }
+  } else {
+    //en caso de rror
+    bot.sendMessage(msg.chat.id, getMsgErrorGraf(), { parse_mode: "HTML" });
+  }
+});
 
 //Mensaje de ayuda al escribir /idea
 bot.onText(/\/idea/, (msg, match) => {
@@ -345,32 +355,32 @@ bot.onText(/\/tickers/, (msg) => {
             text: "MERVAL",
             callback_data: JSON.stringify({
               data: "M",
-              soli: "0",
-              id_soli: msg.from.id,
+              sol: "0",
+              id: msg.from.id,
             }),
           },
           {
             text: "NYSE",
             callback_data: JSON.stringify({
               data: "usa",
-              soli: "0",
-              id_soli: msg.from.id,
+              sol: "0",
+              id: msg.from.id,
             }),
           },
           {
             text: "BONOS",
             callback_data: JSON.stringify({
               data: "bonos",
-              soli: "0",
-              id_soli: msg.from.id,
+              sol: "0",
+              id: msg.from.id,
             }),
           },
           {
             text: "FCIs",
             callback_data: JSON.stringify({
               data: "fci",
-              soli: "0",
-              id_soli: msg.from.id,
+              sol: "0",
+              id: msg.from.id,
             }),
           },
         ],
@@ -381,12 +391,12 @@ bot.onText(/\/tickers/, (msg) => {
 
 //TODO mejorar el codigo, unificarlo
 bot.on("callback_query", async (accionboton) => {
-  const { data, soli, id_soli } = JSON.parse(accionboton.data);
+  const { data, sol, id } = JSON.parse(accionboton.data);
   const id_click = accionboton.from.id;
   const msg = accionboton.message;
 
-  //verifico si quien tocó el boton fue el mismo que solicitó
-  if (id_click !== id_soli) {
+  //verifico si quien tocó el boton fue el mismo que solcitó
+  if (id_click !== id) {
     bot.answerCallbackQuery(accionboton.id, {
       text: "No sos quien solicitó la informacion",
       show_alert: true,
@@ -395,10 +405,14 @@ bot.on("callback_query", async (accionboton) => {
     //borro botones
     bot.deleteMessage(msg.chat.id, msg.message_id);
 
-    //Botones del comando /tickers
+    //################################
+    // Botones del comando /tickers
+    //################################
+
+    //MERVAL
     if (data === "M") {
       //merval
-      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const inicio = Number(sol); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgTickersArg = getMsgTickersArg(inicio);
       const longitudTickersArg = getLongitudTickersArg();
       if (inicio < longitudTickersArg) {
@@ -413,16 +427,16 @@ bot.on("callback_query", async (accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "M",
-                      soli: `${inicio + 5}`,
-                      id_soli: id_soli,
+                      sol: `${inicio + 5}`,
+                      id: id,
                     }),
                   },
                   {
                     text: "Cerrar",
                     callback_data: JSON.stringify({
                       data: "null",
-                      soli: "null",
-                      id_soli: id_soli,
+                      sol: "null",
+                      id: id,
                     }),
                   },
                 ],
@@ -433,9 +447,9 @@ bot.on("callback_query", async (accionboton) => {
       }
     }
 
+    //NYSE
     if (data == "usa") {
-      //nyse
-      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const inicio = Number(sol); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgTickersUsa = getMsgTickersUsa(inicio);
       const longitudTickersUsa = getLongitudTickersUsa();
       if (inicio < longitudTickersUsa) {
@@ -450,16 +464,16 @@ bot.on("callback_query", async (accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "usa",
-                      soli: `${inicio + 5}`,
-                      id_soli: id_soli,
+                      sol: `${inicio + 5}`,
+                      id: id,
                     }),
                   },
                   {
                     text: "Cerrar",
                     callback_data: JSON.stringify({
                       data: "null",
-                      soli: "null",
-                      id_soli: id_soli,
+                      sol: "null",
+                      id: id,
                     }),
                   },
                 ],
@@ -469,10 +483,132 @@ bot.on("callback_query", async (accionboton) => {
         );
       }
     }
+    //   ################################################################
 
+    //################################
+    // Botones para comando /graf
+    //################################
+
+    // Mercado Graficas
+    if (data === "gArg") {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      botonesLineasYVelas("arg", msg, ticker, ruedas, id);
+    }
+
+    if (data === "gUsa") {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      botonesLineasYVelas("usa", msg, ticker, ruedas, id);
+    }
+
+    // Botones Candlestick
+    if (data === "V") {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      bot.sendMessage(msg.chat.id, "Seleccionar", {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "EMA9",
+                callback_data: JSON.stringify({
+                  data: "EMA9",
+                  sol: `${ticker} ${ruedas} 9`,
+                  id: id,
+                }),
+              },
+              {
+                text: "EMA27",
+                callback_data: JSON.stringify({
+                  data: "EMA27",
+                  sol: `${ticker} ${ruedas} 27`,
+                  id: id,
+                }),
+              },
+              {
+                text: "EMA100",
+                callback_data: JSON.stringify({
+                  data: "EMA100",
+                  sol: `${ticker} ${ruedas} 100`,
+                  id: id,
+                }),
+              },
+              {
+                text: "EMA200",
+                callback_data: JSON.stringify({
+                  data: "EMA200",
+                  sol: `${ticker} ${ruedas} 200`,
+                  id: id,
+                }),
+              },
+            ],
+            [
+              {
+                text: "EMA 50 y 200",
+                callback_data: JSON.stringify({
+                  data: "EMA50200",
+                  sol: `${ticker} ${ruedas} 50 200`,
+                  id: id,
+                }),
+              },
+              {
+                text: "EMA 9 y 27",
+                callback_data: JSON.stringify({
+                  data: "EMA927",
+                  sol: `${ticker} ${ruedas} 9 27`,
+                  id: id,
+                }),
+              },
+            ],
+            [
+              {
+                text: "Sin EMA",
+                callback_data: JSON.stringify({
+                  data: "SINEMA",
+                  sol: `${ticker} ${ruedas}`,
+                  id: id,
+                }),
+              },
+            ],
+          ],
+        },
+      });
+    }
+
+    // Si toco alguna ema o ninguna
+    if (
+      data === "EMA9" ||
+      data === "EMA27" ||
+      data === "EMA100" ||
+      data === "EMA200" ||
+      data === "SINEMA"
+    ) {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      const periodo_ema = sol.trim().split(" ")[2];
+      await candlestickChart(ticker, ruedas, msg, periodo_ema);
+    }
+    if (data === "EMA927" || data === "EMA50200") {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      const periodo_ema1 = sol.trim().split(" ")[2];
+      const periodo_ema2 = sol.trim().split(" ")[3];
+      await candlestickChart(ticker, ruedas, msg, periodo_ema1, periodo_ema2);
+    }
+
+    // Si toco boton Linea
+    if (data === "Line") {
+      const ticker = sol.trim().split(" ")[0];
+      const ruedas = sol.trim().split(" ")[1];
+      await lineChart(ticker, ruedas, msg);
+    }
+
+    //   ################################################################
+
+    //BONOS
     if (data == "bonos") {
-      //bonos
-      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const inicio = Number(sol); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgBonosArg = getMsgBonosArg(inicio);
       const longitudBonosArg = getLongitudBonosArg();
       if (inicio < longitudBonosArg) {
@@ -487,16 +623,16 @@ bot.on("callback_query", async (accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "bonos",
-                      soli: `${inicio + 5}`,
-                      id_soli: id_soli,
+                      sol: `${inicio + 5}`,
+                      id: id,
                     }),
                   },
                   {
                     text: "Cerrar",
                     callback_data: JSON.stringify({
                       data: "null",
-                      soli: "null",
-                      id_soli: id_soli,
+                      sol: "null",
+                      id: id,
                     }),
                   },
                 ],
@@ -507,9 +643,9 @@ bot.on("callback_query", async (accionboton) => {
       }
     }
 
+    //FCI
     if (data == "fci") {
-      //bonos
-      const inicio = Number(soli); //inicio desde donde voy a mostrar el arreglo de tickers
+      const inicio = Number(sol); //inicio desde donde voy a mostrar el arreglo de tickers
       const msgFCIs = getMsgFCIs(inicio);
       const longitudFCIs = getLongitudFCIs();
       if (inicio < longitudFCIs) {
@@ -521,16 +657,16 @@ bot.on("callback_query", async (accionboton) => {
                   text: "Mostrar Mas",
                   callback_data: JSON.stringify({
                     data: "fci",
-                    soli: `${inicio + 5}`,
-                    id_soli: id_soli,
+                    sol: `${inicio + 5}`,
+                    id: id,
                   }),
                 },
                 {
                   text: "Cerrar",
                   callback_data: JSON.stringify({
                     data: "null",
-                    soli: "null",
-                    id_soli: id_soli,
+                    sol: "null",
+                    id: id,
                   }),
                 },
               ],
@@ -542,18 +678,18 @@ bot.on("callback_query", async (accionboton) => {
 
     //Acciones
     if (data == "bCBA") {
-      verCotizacion("bCBA", soli, msg);
+      verCotizacion("bCBA", sol, msg);
     }
     if (data == "nYSE") {
-      verCotizacion("nYSE", soli, msg);
+      verCotizacion("nYSE", sol, msg);
     }
 
     //Opciones
     if (data == "CALL") {
-      verOpciones("Call", "bCBA", soli, msg);
+      verOpciones("Call", "bCBA", sol, msg);
     }
     if (data == "PUT") {
-      verOpciones("Put", "bCBA", soli, msg);
+      verOpciones("Put", "bCBA", sol, msg);
     }
   }
 });
@@ -578,8 +714,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: accion_arg,
       callback_data: JSON.stringify({
         data: accion_arg,
-        soli: ticker,
-        id_soli: msg.from.id,
+        sol: ticker,
+        id: msg.from.id,
       }),
     });
   }
@@ -588,8 +724,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: accion_usa,
       callback_data: JSON.stringify({
         data: accion_usa,
-        soli: ticker,
-        id_soli: msg.from.id,
+        sol: ticker,
+        id: msg.from.id,
       }),
     });
   }
@@ -598,8 +734,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: "Cedear",
       callback_data: JSON.stringify({
         data: cedear,
-        soli: ticker,
-        id_soli: msg.from.id,
+        sol: ticker,
+        id: msg.from.id,
       }),
     });
   }
@@ -608,8 +744,8 @@ bot.onText(/\/ticker (.+)/, async (msg, match) => {
       text: "ADR",
       callback_data: JSON.stringify({
         data: adr,
-        soli: ticker,
-        id_soli: msg.from.id,
+        sol: ticker,
+        id: msg.from.id,
       }),
     });
   }
@@ -657,16 +793,16 @@ bot.onText(/\/opciones (.+)/, async (msg, match) => {
               text: "CALL",
               callback_data: JSON.stringify({
                 data: "CALL",
-                soli: ticker,
-                id_soli: msg.from.id,
+                sol: ticker,
+                id: msg.from.id,
               }),
             },
             {
               text: "PUT",
               callback_data: JSON.stringify({
                 data: "PUT",
-                soli: ticker,
-                id_soli: msg.from.id,
+                sol: ticker,
+                id: msg.from.id,
               }),
             },
           ],
@@ -700,7 +836,7 @@ bot.onText(/\/dolar/, async (msg) => {
     const { compra: cBlue, venta: vBlue } = dataDolar.blue;
     const { compra: cBolsa, venta: vBolsa } = dataDolar.bolsa;
     const { compra: cCCL, venta: vCCL } = dataDolar.ccl;
-    const { venta: vSolidario } = dataDolar.solidario;
+    const { venta: vsoldario } = dataDolar.soldario;
     bot.sendMessage(
       msg.chat.id,
       `<b>[Oficial]</b>
@@ -711,8 +847,8 @@ bot.onText(/\/dolar/, async (msg) => {
   Compra: ${cBolsa} ARS // Venta: ${vBolsa} ARS
   <b>[CCL]</b>
   Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
-  <b>[Solidario]</b>
-  Venta: ${vSolidario} ARS 
+  <b>[soldario]</b>
+  Venta: ${vsoldario} ARS 
   <u>${dataDolar.hora_refresh}hs</u>    `,
       {
         parse_mode: "HTML",
@@ -761,6 +897,39 @@ bot.on("left_chat_member", (msg) => {
 bot.on("polling_error", (err) => console.log(err));
 
 //---------------------------------------------------------------------------------------
+
+const botonesLineasYVelas = (mercado, msg, ticker, ruedas, id) => {
+  let tickerOutput = "";
+  if (mercado == "arg") {
+    tickerOutput = `${ticker}.ba`;
+  } else {
+    tickerOutput = `${ticker}`;
+  }
+  bot.sendMessage(msg.chat.id, "Seleccionar", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "Linea",
+            callback_data: JSON.stringify({
+              data: "Line",
+              sol: `${tickerOutput} ${ruedas}`,
+              id: id,
+            }),
+          },
+          {
+            text: "Velas",
+            callback_data: JSON.stringify({
+              data: "V",
+              sol: `${tickerOutput} ${ruedas}`,
+              id: id,
+            }),
+          },
+        ],
+      ],
+    },
+  });
+};
 
 const enviarMensajeSinBorrar = (chat_id, mensaje) => {
   bot.sendMessage(chat_id, mensaje, {

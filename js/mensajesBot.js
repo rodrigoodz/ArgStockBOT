@@ -807,6 +807,8 @@ const error_ticker = `El ticker solicitado no existe o hubo un error, escriba el
 
 const error_opciones = `No hay opciones para el ticker solicitado o hubo un error`;
 
+const mensaje_error_graf = `Error al solicitar grafico, escriba /graf {ticker} {ruedas}`;
+
 const mensaje_error_forex = `Error al solicitar la informacion, escriba /forex {divisas}`;
 
 const mensaje_error_idea = `Error al solicitar la informacion, escriba /idea {ticker}`;
@@ -822,6 +824,10 @@ Ejemplo: /idea aapl</pre>`;
 const mensaje_ayuda_opciones = `<pre>Recuerda utilizar el comando 
 /opciones (ticker_argentino)
 Ejemplo: /opciones ggal</pre>`;
+
+const mensaje_ayuda_graf = `<pre>Recuerda utilizar el comando 
+/graf (ticker) (ruedas)
+Ejemplo: /graf ypfd 125</pre>`;
 
 const mensaje_ayuda_forex = `<pre>Recuerda utilizar el comando 
 /forex (divisas)
@@ -918,12 +924,20 @@ const getMsgErrorIdea = () => {
   return mensaje_error_idea;
 };
 
+const getMsgErrorGraf = () => {
+  return mensaje_error_graf;
+};
+
 const getMsgAyudaTicker = () => {
   return mensaje_ayuda_ticker;
 };
 
 const getMsgAyudaForex = () => {
   return mensaje_ayuda_forex;
+};
+
+const getMsgAyudaGraf = () => {
+  return mensaje_ayuda_graf;
 };
 
 const getMsgAyudaOpciones = () => {
@@ -934,6 +948,8 @@ module.exports = {
   getMsgAbout,
   getMsgStart,
   getMsgComandos,
+  getMsgAyudaGraf,
+  getMsgErrorGraf,
   getMsgTickersArg,
   getMsgTickersUsa,
   getLongitudTickersUsa,
