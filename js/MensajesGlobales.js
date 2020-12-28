@@ -13,14 +13,13 @@ const enviarMensajeGlobal = async (msg, match) => {
     const chats = await getDBFirebase();
     if (chats.length > 0) {
       chats.forEach((chat) => {
-        bot
-          .sendMessage(chat.id, match[1], { parse_mode: "HTML" })
-          .then((mensaje) => {
-            //despues de 2 minutos borro el mensaje de todos los grupos
-            setTimeout(() => {
-              bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
-            }, 60000);
-          });
+        bot.sendMessage(chat.id, match[1], { parse_mode: "HTML" });
+        // .then((mensaje) => {
+        //   //despues de 2 minutos borro el mensaje de todos los grupos
+        //   setTimeout(() => {
+        //     bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
+        //   }, 15 * 60000);
+        // });
       });
     }
   }
