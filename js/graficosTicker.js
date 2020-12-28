@@ -40,7 +40,9 @@ const lineChart = async (ticker, ruedas, msg) => {
         text: `${ticker.toUpperCase()}`,
       },
       subtitle: {
-        text: `${datos.length} ruedas`,
+        text: `${fechas_slice[0]} hasta ${
+          fechas_slice[fechas_slice.length - 1]
+        }`,
       },
       xAxis: [
         {
@@ -246,7 +248,9 @@ const candlestickChart = async (
         text: `${ticker.toUpperCase()}`,
       },
       subtitle: {
-        text: `${datos.length} ruedas`,
+        text: `${fechas_slice[0]} hasta ${
+          fechas_slice[fechas_slice.length - 1]
+        }`,
       },
       xAxis: [
         {
