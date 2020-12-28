@@ -5,18 +5,32 @@ Donar: <a  href="https://www.mercadopago.com.ar/checkout/v1/redirect/1b830039-3a
 
 const start = `<b>ArgStockBOT</b> es un bot desarrollado por @orra6 y ofrece ciertas caracteristicas relacionadas a la bolsa de valores argentina. Para ver todos los comandos disponibles, escriba <b>/comandos</b>
 <pre>Funciones:
--Si el bot es agregado a un grupo, este informará el cierre y apertura del mercado argentino con 5 minutos de antelación
--Ver la lista de empresas que cotizan en bolsa
+-Si el bot es agregado a un grupo, este informará cierre y apertura del mercado argentino con 5 minutos de antelación
+-Ver lista de empresas que cotizan en NYSE o Merval
+-Ver lista de Bonos y FCIs disponibles
 -Consultar la cotización de una empresa en forma particular
 -Consultar opciones disponibles y sus cotizaciones
 -Obtener cotización actual del bitcoin
--Obtener cotizacion actual del dolar utilizando la informacion provista por Bluelytics</pre>`;
+-Obtener cotización actual del dólar
+-Obtener ultima recomendación/idea publicada en TradingView para algún ticker particular
+-Obtener grafico diario de alguna empresa elegida</pre>`;
 
-const comandos = `<b>/tickers</b> -> muestra una lista de todos los tickers disponibles para consultar
-<b>/ticker {ticker_especifico}</b> -> consultar un ticker particular
-<b>/opciones {ticker_especifico}</b> -> ver opciones disponibles y sus cotizaciones
-<b>/dolar</b> -> obtener precio del dolar (info. de Bluelytics)
+const comandos = `<b>/tickers</b> -> lista de tickers disponibles para consultar (NYSE, MERVAL, BONOS, FCIs)
+
+<b>/ticker {ticker}</b> -> consultar un ticker particular (NYSE,MERVAL,BONOS,OPCIONES,FCIs)
+
+<b>/forex {divisas}</b> -> obtener cotizacion entre pares de divisas (FOREX)
+
+<b>/idea {ticker}</b> -> obtener última idea publicada en Tradingview (NYSE, NASDAQ, MERVAL, FOREX)
+
+<b>/graf {ticker} {ruedas}</b> -> obtener grafico diario de una empresa (NYSE, MERVAL)
+
+<b>/opciones {ticker}</b> -> ver opciones disponibles y sus cotizaciones (MERVAL)
+
+<b>/dolar</b> -> cotización actual del dolar
+
 <b>/btc</b> -> cotizacion actual del Bitcoin en USD
+
 <b>/about</b> -> informacion`;
 
 // const tickers_arg = [
