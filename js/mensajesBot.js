@@ -814,7 +814,7 @@ const mensaje_error_forex = `Error al solicitar la informacion, escriba /forex {
 const mensaje_error_idea = `Error al solicitar la informacion, escriba /idea {ticker}`;
 
 const mensaje_ayuda_ticker = `<pre>Recuerda utilizar el comando 
-/ticker (ticker_argentino)
+/ticker (ticker)
 Ejemplo: /ticker ypfd</pre>`;
 
 const mensaje_ayuda_idea = `<pre>Recuerda utilizar el comando 
