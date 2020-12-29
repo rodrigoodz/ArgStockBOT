@@ -8,10 +8,10 @@ const getIdea = async (ticker, mercado) => {
     let pagina = "";
     if (mercado) {
       //consulto algun ticker del bcba o nasdaq
-      pagina = `https://es.tradingview.com/symbols/${mercado}-${ticker}/ideas/`;
+      pagina = `https://es.tradingview.com/symbols/${mercado}-${ticker}/ideas/?sort=recent`;
     } else {
       //consulto divisas
-      pagina = `https://es.tradingview.com/symbols/${ticker}/ideas/`;
+      pagina = `https://es.tradingview.com/symbols/${ticker}/ideas/?sort=recent`;
     }
     //entramos a la pagina mediante puppeteer
     const browser = await puppeteer.launch({
@@ -30,7 +30,7 @@ const getIdea = async (ticker, mercado) => {
     //si el ticker no es de NASDAQ, me fijo en NYSE
     if (ideas == null) {
       response = await page.goto(
-        `https://es.tradingview.com/symbols/NYSE-${ticker}/ideas/`
+        `https://es.tradingview.com/symbols/NYSE-${ticker}/ideas/?sort=recent`
       );
       body = await response.text();
       // 'parseamos' con JSDOM
