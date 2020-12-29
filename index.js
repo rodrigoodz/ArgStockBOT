@@ -210,7 +210,7 @@ bot.onText(/\/idea (.+)/, async (msg, match) => {
     }
 
     date.setHours(date.getUTCHours() - 3);
-    const mes = date.getUTCMonth();
+    const mes = date.getUTCMonth() + 1;
     let min;
     date.getUTCMinutes() < 10
       ? (min = "0" + date.getUTCMinutes())
