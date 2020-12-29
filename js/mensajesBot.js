@@ -827,6 +827,9 @@ const mensaje_error_forex = `Error al solicitar la informacion, escriba /forex {
 
 const mensaje_error_idea = `Error al solicitar la informacion, escriba /idea {ticker}`;
 
+const mensaje_error_informacion =
+  "Hubo un error al obtener la informacion solicitada";
+
 const mensaje_ayuda_ticker = `<pre>Recuerda utilizar el comando 
 /ticker (ticker)
 Ejemplo: /ticker ypfd</pre>`;
@@ -857,6 +860,10 @@ const getMsgStart = () => {
 
 const getMsgComandos = () => {
   return comandos;
+};
+
+const getMsgErrorInfo = () => {
+  return mensaje_error_informacion;
 };
 
 const getLongitudTickersArg = () => {
@@ -980,4 +987,5 @@ module.exports = {
   getMsgErrorForex,
   getMsgAyudaIdea,
   getMsgErrorIdea,
+  getMsgErrorInfo,
 };

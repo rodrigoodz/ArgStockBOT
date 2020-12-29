@@ -43,6 +43,7 @@ const {
   getMsgAyudaIdea,
   getMsgErrorIdea,
   getMsgErrorGraf,
+  getMsgErrorInfo,
 } = require("./js/mensajesBot");
 const { getPrecioBitcoinUsd } = require("./js/obtenerPrecioBitcoin");
 const { getDataDolar } = require("./js/webscrapingDolar");
@@ -257,45 +258,47 @@ bot.onText(/\/forex/, (msg, match) => {
 //TODO agregar comando a /comandos y /start
 bot.onText(/\/forex (.+)/, async (msg, match) => {
   const divisas = match[1].split(" ")[0];
+  try {
+    const forex = es_forex(divisas);
+    if (forex) {
+      const dataForex = await getDataForex(divisas.toUpperCase());
+      const { rate, timestamp } = dataForex;
 
-  const forex = es_forex(divisas);
-  if (forex) {
-    const dataForex = await getDataForex(divisas.toUpperCase());
-    const { rate, timestamp } = dataForex;
+      const date = new Date(timestamp * 1000);
 
-    const date = new Date(timestamp * 1000);
+      date.setHours(date.getUTCHours() - 3);
+      const mes = date.getUTCMonth();
+      let min;
+      date.getUTCMinutes() < 10
+        ? (min = "0" + date.getUTCMinutes())
+        : (min = date.getUTCMinutes());
+      let dia;
+      date.getUTCDate() < 10
+        ? (dia = "0" + date.getUTCDate())
+        : (dia = date.getUTCDate());
+      let hora;
+      date.getHours() < 10
+        ? (hora = "0" + date.getHours())
+        : (hora = date.getHours());
 
-    date.setHours(date.getUTCHours() - 3);
-    const mes = date.getUTCMonth();
-    let min;
-    date.getUTCMinutes() < 10
-      ? (min = "0" + date.getUTCMinutes())
-      : (min = date.getUTCMinutes());
-    let dia;
-    date.getUTCDate() < 10
-      ? (dia = "0" + date.getUTCDate())
-      : (dia = date.getUTCDate());
-    let hora;
-    date.getHours() < 10
-      ? (hora = "0" + date.getHours())
-      : (hora = date.getHours());
-
-    bot.sendMessage(
-      msg.chat.id,
-      `<b>[${divisas.toUpperCase()}]</b> 
+      bot.sendMessage(
+        msg.chat.id,
+        `<b>[${divisas.toUpperCase()}]</b> 
   Precio: ${rate} USD
   <u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
     `,
-      {
-        parse_mode: "HTML",
-      }
-    );
-  } else {
-    bot.sendMessage(msg.chat.id, getMsgErrorForex(), { parse_mode: "HTML" });
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } else {
+      enviarMensajeBorra1Min(msg.chat.id, getMsgErrorForex());
+    }
+  } catch (error) {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
   }
 });
 
-//comando /btc para obtener precio actualizado del bitcoin
 bot.onText(/\/btc/, async (msg) => {
   const { tiempo, precio } = await getPrecioBitcoinUsd();
   tiempo.setHours(tiempo.getUTCHours() - 3);
