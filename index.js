@@ -861,7 +861,7 @@ bot.onText(/\/dolar/, async (msg) => {
   Compra: ${cBolsa} ARS // Venta: ${vBolsa} ARS
   <b>[CCL]</b>
   Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
-  <b>[soldario]</b>
+  <b>[Solidario]</b>
   Venta: ${vsolidario} ARS 
   <u>${dataDolar.hora_refresh}hs</u>    `,
         {
