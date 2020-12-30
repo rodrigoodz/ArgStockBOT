@@ -120,44 +120,56 @@ bot.onText(/\/graf (.+)/, (msg, match) => {
   const tipo = [accion_arg, accion_usa, cedear].filter((elemento) => {
     return elemento != undefined;
   });
-
-  //si esta en mas de 1, muestro botones
-  if (tipo.length > 1 && Number(ruedas) > 0) {
-    if (Number(ruedas) > 500) {
-      //si escribio > 500 ruedas
-      bot.sendMessage(
-        msg.chat.id,
-        "Ingresar un cantidad de ruedas menor a 500",
-        { parse_mode: "HTML" }
-      );
-    } else {
-      //sino muestro botones
-      bot.sendMessage(msg.chat.id, "Seleccionar", {
-        reply_markup: {
-          inline_keyboard: [botones],
-        },
-      });
-    }
-  } else if (tipo.length === 1 && Number(ruedas) > 0) {
-    //si el ticker esta en un solo mercado, muestro directamente botones
-    if (Number(ruedas) > 500) {
-      //si escribio > 500 ruedas
-      bot.sendMessage(
-        msg.chat.id,
-        "Ingresar un cantidad de ruedas menor a 500",
-        { parse_mode: "HTML" }
-      );
-    } else {
-      //sino muestro botones
-      if (accion_arg || cedear) {
-        botonesLineasYVelas("arg", msg, ticker, ruedas, msg.from.id);
-      } else {
-        botonesLineasYVelas("usa", msg, ticker, ruedas, msg.from.id);
-      }
-    }
+  // ///////////////////////////////////////////////////
+  const tickers_invalidos = ["mirg", "bbar", "txar"];
+  const invalido = tickers_invalidos.filter((e) => {
+    return e == ticker;
+  });
+  //algunas graficas no estan disponibles en yahoo-finance, si se consulto alguna de ellas mando mensaje
+  if (invalido.length > 0) {
+    enviarMensajeBorra1Min(
+      msg.chat.id,
+      `Las gráficas de los tickers ${tickers_invalidos} no estan disponibles actualmente.`
+    );
   } else {
-    //en caso de rror
-    bot.sendMessage(msg.chat.id, getMsgErrorGraf(), { parse_mode: "HTML" });
+    if (tipo.length > 1 && Number(ruedas) > 0) {
+      //si esta en mas de 1, muestro botones
+      if (Number(ruedas) > 500) {
+        //si escribio > 500 ruedas
+        bot.sendMessage(
+          msg.chat.id,
+          "Ingresar un cantidad de ruedas menor a 500",
+          { parse_mode: "HTML" }
+        );
+      } else {
+        //sino muestro botones
+        bot.sendMessage(msg.chat.id, "Seleccionar", {
+          reply_markup: {
+            inline_keyboard: [botones],
+          },
+        });
+      }
+    } else if (tipo.length === 1 && Number(ruedas) > 0) {
+      //si el ticker esta en un solo mercado, muestro directamente botones
+      if (Number(ruedas) > 500) {
+        //si escribio > 500 ruedas
+        bot.sendMessage(
+          msg.chat.id,
+          "Ingresar un cantidad de ruedas menor a 500",
+          { parse_mode: "HTML" }
+        );
+      } else {
+        //sino muestro botones
+        if (accion_arg || cedear) {
+          botonesLineasYVelas("arg", msg, ticker, ruedas, msg.from.id);
+        } else {
+          botonesLineasYVelas("usa", msg, ticker, ruedas, msg.from.id);
+        }
+      }
+    } else {
+      //en caso de rror
+      bot.sendMessage(msg.chat.id, getMsgErrorGraf(), { parse_mode: "HTML" });
+    }
   }
 });
 
