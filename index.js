@@ -300,32 +300,36 @@ bot.onText(/\/forex (.+)/, async (msg, match) => {
 });
 
 bot.onText(/\/btc/, async (msg) => {
-  const { tiempo, precio } = await getPrecioBitcoinUsd();
-  tiempo.setHours(tiempo.getUTCHours() - 3);
-  const mes = tiempo.getUTCMonth() + 1;
-  let min;
-  tiempo.getUTCMinutes() < 10
-    ? (min = "0" + tiempo.getUTCMinutes())
-    : (min = tiempo.getUTCMinutes());
-  let dia;
-  tiempo.getUTCDate() < 10
-    ? (dia = "0" + tiempo.getUTCDate())
-    : (dia = tiempo.getUTCDate());
-  let hora;
-  tiempo.getHours() < 10
-    ? (hora = "0" + tiempo.getHours())
-    : (hora = tiempo.getHours());
+  try {
+    const { tiempo, precio } = await getPrecioBitcoinUsd();
+    tiempo.setHours(tiempo.getUTCHours() - 3);
+    const mes = tiempo.getUTCMonth() + 1;
+    let min;
+    tiempo.getUTCMinutes() < 10
+      ? (min = "0" + tiempo.getUTCMinutes())
+      : (min = tiempo.getUTCMinutes());
+    let dia;
+    tiempo.getUTCDate() < 10
+      ? (dia = "0" + tiempo.getUTCDate())
+      : (dia = tiempo.getUTCDate());
+    let hora;
+    tiempo.getHours() < 10
+      ? (hora = "0" + tiempo.getHours())
+      : (hora = tiempo.getHours());
 
-  bot.sendMessage(
-    msg.chat.id,
-    `<b>[Bitcoin]</b> 
+    bot.sendMessage(
+      msg.chat.id,
+      `<b>[Bitcoin]</b> 
 Precio: ${precio} USD
 <u><i>Datos del ${dia}/${mes} -- ${hora}:${min}hs</i></u>
 `,
-    {
-      parse_mode: "HTML",
-    }
-  );
+      {
+        parse_mode: "HTML",
+      }
+    );
+  } catch (error) {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
+  }
 });
 
 //comando /global (enviar mensaje a todos los grupos donde el bot pertenezca, util por si quiero informar algo)
