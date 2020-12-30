@@ -842,17 +842,18 @@ bot.onText(/\/dolar/, async (msg) => {
       bot.deleteMessage(mensaje.chat.id, mensaje.message_id);
     }, 2000);
   });
-  const dataDolar = await getDataDolar();
+  try {
+    const dataDolar = await getDataDolar();
 
-  if (dataDolar) {
-    const { compra: cOficial, venta: vOficial } = dataDolar.oficial;
-    const { compra: cBlue, venta: vBlue } = dataDolar.blue;
-    const { compra: cBolsa, venta: vBolsa } = dataDolar.bolsa;
-    const { compra: cCCL, venta: vCCL } = dataDolar.ccl;
-    const { venta: vsolidario } = dataDolar.solidario;
-    bot.sendMessage(
-      msg.chat.id,
-      `<b>[Oficial]</b>
+    if (dataDolar) {
+      const { compra: cOficial, venta: vOficial } = dataDolar.oficial;
+      const { compra: cBlue, venta: vBlue } = dataDolar.blue;
+      const { compra: cBolsa, venta: vBolsa } = dataDolar.bolsa;
+      const { compra: cCCL, venta: vCCL } = dataDolar.ccl;
+      const { venta: vsolidario } = dataDolar.solidario;
+      bot.sendMessage(
+        msg.chat.id,
+        `<b>[Oficial]</b>
   Compra: ${cOficial} ARS // Venta: ${vOficial} ARS
   <b>[Blue]</b>
   Compra: ${cBlue} ARS // Venta: ${vBlue} ARS
@@ -863,15 +864,18 @@ bot.onText(/\/dolar/, async (msg) => {
   <b>[soldario]</b>
   Venta: ${vsolidario} ARS 
   <u>${dataDolar.hora_refresh}hs</u>    `,
-      {
-        parse_mode: "HTML",
-      }
-    );
-  } else {
-    enviarMensajeBorra1Min(
-      msg.chat.id,
-      "Hubo un error al obtener la informacion"
-    );
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } else {
+      enviarMensajeBorra1Min(
+        msg.chat.id,
+        "Hubo un error al obtener la informacion"
+      );
+    }
+  } catch (error) {
+    enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
   }
 });
 
