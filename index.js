@@ -279,7 +279,10 @@ bot.onText(/\/forex (.+)/, async (msg, match) => {
       const date = new Date(timestamp * 1000);
 
       date.setHours(date.getUTCHours() - 3);
-      const mes = date.getUTCMonth();
+      let mes;
+      date.getUTCMonth() + 1 < 10
+        ? (mes = "0" + (date.getUTCMonth() + 1))
+        : (mes = date.getUTCMonth() + 1);
       let min;
       date.getUTCMinutes() < 10
         ? (min = "0" + date.getUTCMinutes())
@@ -315,7 +318,10 @@ bot.onText(/\/btc/, async (msg) => {
   try {
     const { tiempo, precio } = await getPrecioBitcoinUsd();
     tiempo.setHours(tiempo.getUTCHours() - 3);
-    const mes = tiempo.getUTCMonth() + 1;
+    let mes;
+    tiempo.getUTCMonth() + 1 < 10
+      ? (mes = "0" + (tiempo.getUTCMonth() + 1))
+      : (mes = tiempo.getUTCMonth() + 1);
     let min;
     tiempo.getUTCMinutes() < 10
       ? (min = "0" + tiempo.getUTCMinutes())
@@ -340,6 +346,7 @@ Precio: ${precio} USD
       }
     );
   } catch (error) {
+    console.log(error);
     enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
   }
 });
