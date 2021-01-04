@@ -310,6 +310,7 @@ bot.onText(/\/forex (.+)/, async (msg, match) => {
       enviarMensajeBorra1Min(msg.chat.id, getMsgErrorForex());
     }
   } catch (error) {
+    console.log(error);
     enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
   }
 });
@@ -894,6 +895,7 @@ bot.onText(/\/dolar/, async (msg) => {
       );
     }
   } catch (error) {
+    console.log(error);
     enviarMensajeBorra1Min(msg.chat.id, getMsgErrorInfo());
   }
 });
