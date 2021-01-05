@@ -2,39 +2,34 @@
 
 ArgStockBOT es un bot de telegram que surgió por la necesidad de tener una forma rápida y sencilla de obtener cotizaciones actuales de ciertas empresas argentinas, sin tener que consultar en una página especifica. Posteriormente, se implementó un método para obtener la cotización actual del dólar, y ciertos recordatorios previos a la apertura y cierre de la bolsa. En el futuro, si surge alguna funcionalidad que se considere pertinente de ser agregada, se desarrollará.
 
-El bot fue realizado completamente en Javascript, mediante NodeJS, utilizando los siguientes modulos:
-<br>
-[node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api).
-<br>
-[dotenv](https://www.npmjs.com/package/dotenv)
-<br>
-[node-bluelytics](https://www.npmjs.com/package/node-bluelytics)
-<br>
-[express](https://www.npmjs.com/package/express)
-<br>
-[woke-dyno](https://www.npmjs.com/package/woke-dyno)
-<br>
-[firebase-admin](https://www.npmjs.com/package/firebase-admin)
-
 <hr>
 
 ## Comandos
 
-**/start**
+**/comandos** -> _desplegar lista de comandos_
 
-**/comandos**
+**/tickers** -> _lista de tickers disponibles para consultar <br>(NYSE, MERVAL, BONOS, FCIs)_
 
-**/tickers** ->muestra una lista todos los tickers argentinos que pueden ser consultados
+**/ticker {ticker}** -> _consultar un ticker particular <br>(NYSE,MERVAL,BONOS,OPCIONES,FCIs)_
 
-**/ticker (ticker_argentino)** -> consultar un ticker particular del mercado argentino
+**/forex {divisas}** -> _obtener cotizacion entre pares de divisas <br>(FOREX)_
 
-**/dolar** -> obtener precio del dolar actual (a partir de Bluelytics)
+**/idea {ticker}** -> _obtener última idea publicada en Tradingview <br>(NYSE, NASDAQ, MERVAL, FOREX)_
 
-**/about** -> acerca de
+**/graf {ticker} {ruedas}** -> _obtener grafico diario de una empresa <br>(NYSE, MERVAL)_
+
+**/opciones {ticker}** -> _ver opciones disponibles y sus cotizaciones <br>(MERVAL)_
+
+**/dolar** -> _cotización actual del dolar_
+
+**/btc** -> _cotizacion actual del Bitcoin en USD_
+
+**/about** -> _informacion_
 
 <hr>
 
 Contactar <br>
+
 [@ArgStockBOT](https://telegram.me/ArgStockBot)
 
 <hr>
