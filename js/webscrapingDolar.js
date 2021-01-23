@@ -18,20 +18,20 @@ const getDataDolar = async () => {
 
     //extraigo lo que necesito
     const aux = [];
-    document.querySelectorAll(".price").forEach((element) => {
+    document.querySelectorAll(".val").forEach((element) => {
       aux.push(element.textContent.trim(" ").toLowerCase());
     });
 
-    const data_hora = document.querySelector(".col-7").innerHTML;
+    const data_hora = document.querySelector(".update").firstChild.innerHTML;
 
     await browser.close();
 
     return {
-      oficial: {
+       blue: {
         compra: aux[0],
         venta: aux[1],
       },
-      blue: {
+      oficial: {
         compra: aux[2],
         venta: aux[3],
       },

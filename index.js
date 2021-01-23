@@ -874,16 +874,16 @@ bot.onText(/\/dolar/, async (msg) => {
       bot.sendMessage(
         msg.chat.id,
         `<b>[Oficial]</b>
-  Compra: ${cOficial} ARS // Venta: ${vOficial} ARS
-  <b>[Blue]</b>
-  Compra: ${cBlue} ARS // Venta: ${vBlue} ARS
-  <b>[Bolsa]</b>
-  Compra: ${cBolsa} ARS // Venta: ${vBolsa} ARS
-  <b>[CCL]</b>
-  Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
-  <b>[Solidario]</b>
-  Venta: ${vsolidario} ARS 
-  <u>${dataDolar.hora_refresh}hs</u>    `,
+Compra: ${cOficial} ARS // Venta: ${vOficial} ARS
+<b>[Blue]</b>
+Compra: ${cBlue} ARS // Venta: ${vBlue} ARS
+<b>[Bolsa]</b>
+Compra: ${cBolsa} ARS // Venta: ${vBolsa} ARS
+<b>[CCL]</b>
+Compra: ${cCCL} ARS // Venta: ${vCCL} ARS
+<b>[Solidario]</b>
+Venta: ${vsolidario} ARS 
+<u>${dataDolar.hora_refresh}</u>    `,
         {
           parse_mode: "HTML",
         }
