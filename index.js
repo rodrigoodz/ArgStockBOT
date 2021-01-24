@@ -121,7 +121,7 @@ bot.onText(/\/graf (.+)/, (msg, match) => {
     return elemento != undefined;
   });
   // ///////////////////////////////////////////////////
-  const tickers_invalidos = ["mirg", "bbar", "txar"];
+  const tickers_invalidos = ["mirg", "bbar", "txar", "carc", "glnt", "pgr"];
   const invalido = tickers_invalidos.filter((e) => {
     return e == ticker;
   });
