@@ -2,8 +2,8 @@ const chartExporter = require("highcharts-export-server");
 const TelegramBot = require("node-telegram-bot-api");
 const ema = require("exponential-moving-average");
 const {
-  getDataHistoricaLine,
   getDataHistoricaCandleStick,
+  getDataHistoricaLine,
 } = require("./yahoo-finance");
 
 // node-telegram-bot-api

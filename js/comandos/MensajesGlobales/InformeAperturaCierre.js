@@ -1,6 +1,6 @@
 // Imports
 const TelegramBot = require("node-telegram-bot-api");
-const { getDBFirebase } = require("./ControladorFirebase");
+const { getDBFirebase } = require("../../auxiliares/ControladorFirebase");
 
 // node-telegram-bot-api
 const token = process.env.BOT_TOKEN;
