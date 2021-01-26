@@ -33,29 +33,6 @@ const comandos = `<b>/tickers</b> -> lista de tickers disponibles para consultar
 
 <b>/about</b> -> informacion`;
 
-// const tickers_arg = [
-//   "ALUA - Aluminio Argentino SA",
-//   "BBAR - Banco Francés SA",
-//   "BMA - Banco Macro SA",
-//   "BYMA - Bolsas y Mercados Argentinos SA",
-//   "CEPU - Central Puerto SA",
-//   "COME - Sociedad Comercial del Plata SA",
-//   "CRES - Cresud SA",
-//   "CVH - Cablevision Holding SA",
-//   "EDN - Edenor",
-//   "GGAL - Grupo Financiero Galicia",
-//   "MIRG - Mirgor",
-//   "PAMP - Pampa Energía",
-//   "SUPV - Grupo Supervielle SA",
-//   "TECO2 - Telecom Argentina SA",
-//   "TGNO4 - Transportadora de Gas del Norte SA",
-//   "TGSU2 - Transportadora de Gas del Sur",
-//   "TRAN - Transener",
-//   "TXAR - Ternium Argentina SA",
-//   "VALO - Grupo Financiero Valores SA",
-//   "YPFD - YPF SA",
-// ];
-
 const tickers_usa = [
   "kod",
   "ach",
@@ -596,73 +573,73 @@ const tickers_usa = [
 ];
 
 const tickers_arg = [
-  "agro - Agrometal",
-  "alua - Aluar",
-  "auso - Autopistas del Sol",
-  "bbar - BBVA",
-  "bhip - Banco Hipotecario",
-  "bma - Banco Macro",
-  "bolt - Boldt",
-  "bpat - Banco Patagonia",
-  "brio - Banco Santander",
-  "byma - Bolsas y Mercados Argentinos",
-  "cado - Carlos Casado",
-  "capx - Capex",
-  "carc - Carboclor S.A.",
-  "ceco2 - Endesa Costanera",
-  "celu - Celulosa",
-  "cepu - Central Puerto SA",
-  "cgpa2 - Camuzzi Gas Pampeana",
-  "come - Sociedad Comercial del Plata",
-  "cres - Cresud",
-  "ctio - Consultatio",
-  "cvh - Cablevision Holding S.A.",
-  "dgcu2 - Distribuidora de Gas Cuyana",
-  "dyca - Dycasa",
-  "edn - Edenor",
-  "esme - Bodegas Esmeralda",
-  "ferr - Ferrum",
-  "fipl - Fiplasto",
-  "gami - B-Gaming S.A",
-  "garo - Garovaglio y Zorraquin",
-  "gban - Gas Natural Ban",
-  "gcla - Grupo Clarin",
-  "ggal - Grupo Financiero Galicia",
-  "grim - Grimoldi",
-  "harg - Holcim",
-  "hava - Havanna Holding",
-  "inag - Insumos Agroquimicos",
-  "intr - Compania Introductora de BsAs",
-  "invj - Inversora Juramento",
-  "ircp - Alto Palermo",
-  "irsa - Irsa",
-  "lede - Ledesma",
-  "loma - Loma Negra Compañia Industrial",
-  "long - Longvie",
-  "metr - Metrogas",
-  "mirg - Mirgor",
-  "mola - Molinos Agro S.A.",
-  "moli - Molinos Rio de la Plata",
-  "mori - Morixe Hermanos",
-  "oest - Grupo Concesionario del Oeste",
-  "pamp - Pampa Energia",
-  "pata - Imp. y Exportadora de la Patagonia",
-  "pgr - Phoenix Global Resources",
-  "poll - Polledo",
-  "rich - Laboratorios Richmond S.A.C.I.F.",
-  "rigo - Rigolleau",
-  "rose - Instituto Rosenbusch",
-  "sami - San Miguel",
-  "semi - Molinos Juan Semino",
-  "supv - Grupo Supervielle",
-  "teco2 - Telecom Argentina",
-  "tglt - TGLT S.A",
-  "tgno4 - Transportadora Gas del Norte",
-  "tgsu2 - Transportadora Gas del Sur",
-  "tran - Transener",
-  "txar - Ternium Argentina",
-  "valo - Grupo Financiero Valores",
-  "ypfd - Ypf",
+  { ticker: "agro", nombre: "Agrometal" },
+  { ticker: "alua", nombre: "Aluar" },
+  { ticker: "auso", nombre: "Autopistas del Sol" },
+  { ticker: "bbar", nombre: "BBVA" },
+  { ticker: "bhip", nombre: "Banco Hipotecario" },
+  { ticker: "bma", nombre: "Banco Macro" },
+  { ticker: "bolt", nombre: "Boldt" },
+  { ticker: "bpat", nombre: "Banco Patagonia" },
+  { ticker: "brio", nombre: "Banco Santander" },
+  { ticker: "byma", nombre: "Bolsas y Mercados Argentinos" },
+  { ticker: "cado", nombre: "Carlos Casado" },
+  { ticker: "capx", nombre: "Capex" },
+  { ticker: "carc", nombre: "Carboclor S.A." },
+  { ticker: "ceco2", nombre: "Endesa Costanera" },
+  { ticker: "celu", nombre: "Celulosa" },
+  { ticker: "cepu", nombre: "Central Puerto SA" },
+  { ticker: "cgpa2", nombre: "Camuzzi Gas Pampeana" },
+  { ticker: "come", nombre: "Sociedad Comercial del Plata" },
+  { ticker: "cres", nombre: "Cresud" },
+  { ticker: "ctio", nombre: "Consultatio" },
+  { ticker: "cvh", nombre: "Cablevision Holding S.A." },
+  { ticker: "dgcu2", nombre: "Distribuidora de Gas Cuyana" },
+  { ticker: "dyca", nombre: "Dycasa" },
+  { ticker: "edn", nombre: "Edenor" },
+  { ticker: "esme", nombre: "Bodegas Esmeralda" },
+  { ticker: "ferr", nombre: "Ferrum" },
+  { ticker: "fipl", nombre: "Fiplasto" },
+  { ticker: "gami", nombre: "BGaming S.A" },
+  { ticker: "garo", nombre: "Garovaglio y Zorraquin" },
+  { ticker: "gban", nombre: "Gas Natural Ban" },
+  { ticker: "gcla", nombre: "Grupo Clarin" },
+  { ticker: "ggal", nombre: "Grupo Financiero Galicia" },
+  { ticker: "grim", nombre: "Grimoldi" },
+  { ticker: "harg", nombre: "Holcim" },
+  { ticker: "hava", nombre: "Havanna Holding" },
+  { ticker: "inag", nombre: "Insumos Agroquimicos" },
+  { ticker: "intr", nombre: "Compania Introductora de BsAs" },
+  { ticker: "invj", nombre: "Inversora Juramento" },
+  { ticker: "ircp", nombre: "Alto Palermo" },
+  { ticker: "irsa", nombre: "Irsa" },
+  { ticker: "lede", nombre: "Ledesma" },
+  { ticker: "loma", nombre: "Loma Negra Compañia Industrial" },
+  { ticker: "long", nombre: "Longvie" },
+  { ticker: "metr", nombre: "Metrogas" },
+  { ticker: "mirg", nombre: "Mirgor" },
+  { ticker: "mola", nombre: "Molinos Agro S.A." },
+  { ticker: "moli", nombre: "Molinos Rio de la Plata" },
+  { ticker: "mori", nombre: "Morixe Hermanos" },
+  { ticker: "oest", nombre: "Grupo Concesionario del Oeste" },
+  { ticker: "pamp", nombre: "Pampa Energia" },
+  { ticker: "pata", nombre: "Imp. y Exportadora de la Patagonia" },
+  { ticker: "pgr", nombre: "Phoenix Global Resources" },
+  { ticker: "poll", nombre: "Polledo" },
+  { ticker: "rich", nombre: "Laboratorios Richmond S.A.C.I.F." },
+  { ticker: "rigo", nombre: "Rigolleau" },
+  { ticker: "rose", nombre: "Instituto Rosenbusch" },
+  { ticker: "sami", nombre: "San Miguel" },
+  { ticker: "semi", nombre: "Molinos Juan Semino" },
+  { ticker: "supv", nombre: "Grupo Supervielle" },
+  { ticker: "teco2", nombre: "Telecom Argentina" },
+  { ticker: "tglt", nombre: "TGLT S.A" },
+  { ticker: "tgno4", nombre: "Transportadora Gas del Norte" },
+  { ticker: "tgsu2", nombre: "Transportadora Gas del Sur" },
+  { ticker: "tran", nombre: "Transener" },
+  { ticker: "txar", nombre: "Ternium Argentina" },
+  { ticker: "valo", nombre: "Grupo Financiero Valores" },
+  { ticker: "ypfd", nombre: "Ypf" },
 ];
 
 const bonos_arg = [
@@ -873,8 +850,8 @@ const getMsgTickersArg = (inicio) => {
   let text = "";
   const longitud = tickers_arg.length;
   for (let i = inicio; i < inicio + 10; i++) {
-    if (i == longitud) break;
-    text += `${tickers_arg[i]}
+    if (i >= longitud) break;
+    text += `${tickers_arg[i].ticker} - ${tickers_arg[i].nombre}
 
 `;
   }
@@ -883,12 +860,14 @@ const getMsgTickersArg = (inicio) => {
 const getLongitudTickersUsa = () => {
   return tickers_usa.length;
 };
+
 const getMsgTickersUsa = (inicio) => {
   let text = "";
   const longitud = tickers_usa.length;
+  console.log(longitud);
   for (let i = inicio; i < inicio + 10; i++) {
-    if (i == longitud) break;
-    text += `${tickers_usa[i]}
+    if (i >= longitud) break;
+    text += `${tickers_usa[i].ticker} - ${tickers_usa[i].nombre}
 
 `;
   }
@@ -898,6 +877,7 @@ const getMsgTickersUsa = (inicio) => {
 const getLongitudBonosArg = () => {
   return bonos_arg.length;
 };
+
 const getMsgBonosArg = (inicio) => {
   let text = "";
   const longitud = bonos_arg.length;
