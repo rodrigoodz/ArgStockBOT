@@ -11,6 +11,16 @@ const informeApertura = async (apertura) => {
   if (chats.length > 0) {
     if (apertura === 1) {
       chats.forEach((chat) => {
+        // enviar un mensaje a mi usuario informando
+        bot.sendMessage(
+          process.env.ORRA_ID,
+          `Se envió un informe de apertura o cierre al grupo ${chat.titulo}`,
+          { parse_mode: "HTML" }
+        );
+        console.log(
+          `Se envió un informe de apertura o cierre al grupo ${chat.titulo}`
+        );
+        // ------------------------------------------------
         bot
           .sendMessage(
             chat.id,
