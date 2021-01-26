@@ -55,7 +55,7 @@ const callbackQuery = async (bot, accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "M",
-                      sol: `${inicio + 5}`,
+                      sol: `${inicio + 10}`,
                       id: id,
                     }),
                   },
@@ -92,7 +92,7 @@ const callbackQuery = async (bot, accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "usa",
-                      sol: `${inicio + 5}`,
+                      sol: `${inicio + 10}`,
                       id: id,
                     }),
                   },
@@ -250,7 +250,7 @@ const callbackQuery = async (bot, accionboton) => {
                     text: "Mostrar Mas",
                     callback_data: JSON.stringify({
                       data: "bonos",
-                      sol: `${inicio + 5}`,
+                      sol: `${inicio + 10}`,
                       id: id,
                     }),
                   },
@@ -284,7 +284,7 @@ const callbackQuery = async (bot, accionboton) => {
                   text: "Mostrar Mas",
                   callback_data: JSON.stringify({
                     data: "fci",
-                    sol: `${inicio + 5}`,
+                    sol: `${inicio + 10}`,
                     id: id,
                   }),
                 },
