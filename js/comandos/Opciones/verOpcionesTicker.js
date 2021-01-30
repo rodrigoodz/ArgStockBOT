@@ -16,12 +16,20 @@ const verOpciones = async (bot, tipo, mercado, ticker, msg) => {
       if (e.tipoOpcion == tipo) {
         let aux = e.descripcion.replace("Vencimiento:", "Vto.");
         mensajeOpciones += `
-<u>${aux}</u>
-<i>Variacion: ${e.cotizacion.variacion}% - Ult. Precio: ${e.cotizacion.ultimoPrecio}$</i>`;
+${aux}
+Variacion: ${e.cotizacion.variacion}% - Ult. Precio: ${e.cotizacion.ultimoPrecio}$`;
       }
     });
     mensajeOpciones += "";
-    enviarMensajeSinBorrar(bot, msg.chat.id, mensajeOpciones);
+    //si el mensaje sobrepasa los 4096 caracteres, divido en dos mensajes
+    if (mensajeOpciones.length > 4096) {
+      const Mensaje1 = mensajeOpciones.slice(0, mensajeOpciones.length / 2);
+      const Mensaje2 = mensajeOpciones.slice(mensajeOpciones.length / 2, -1);
+      enviarMensajeSinBorrar(bot, msg.chat.id, Mensaje1);
+      enviarMensajeSinBorrar(bot, msg.chat.id, Mensaje2);
+    } else {
+      enviarMensajeSinBorrar(bot, msg.chat.id, mensajeOpciones);
+    }
   }
 };
 
