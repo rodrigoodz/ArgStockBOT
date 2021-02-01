@@ -18,7 +18,7 @@ const comandoAyudaGraf = (bot, msg, match) => {
 };
 
 const comandoGraf = async (bot, msg, match) => {
-  const ticker = match[1].split(" ")[0];
+  const ticker = match[1].split(" ")[0].toLowerCase();
   const ruedas = match[1].split(" ")[1];
 
   //consulto tipo accion y armo botones para seleccionar tipo
@@ -110,7 +110,6 @@ const comandoGraf = async (bot, msg, match) => {
       }
     } else {
       //en caso de error
-
       enviarMensajeBorra1Min(bot, msg.chat.id, getMsgErrorGraf());
     }
   }
