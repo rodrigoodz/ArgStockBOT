@@ -109,8 +109,9 @@ const comandoGraf = async (bot, msg, match) => {
         }
       }
     } else {
-      //en caso de rror
-      bot.sendMessage(msg.chat.id, getMsgErrorGraf(), { parse_mode: "HTML" });
+      //en caso de error
+
+      enviarMensajeBorra1Min(bot, msg.chat.id, getMsgErrorGraf());
     }
   }
 };
