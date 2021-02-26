@@ -21,30 +21,31 @@ const getDataDolar = async () => {
     document.querySelectorAll(".val").forEach((element) => {
       aux.push(element.textContent.trim(" ").toLowerCase());
     });
+    console.log("data extraida de dolarhoy: ", aux);
 
     const data_hora = document.querySelector(".update").firstChild.innerHTML;
 
     await browser.close();
 
     return {
-       blue: {
-        compra: aux[0],
-        venta: aux[1],
-      },
-      oficial: {
+      blue: {
         compra: aux[2],
         venta: aux[3],
       },
-      bolsa: {
+      oficial: {
         compra: aux[4],
         venta: aux[5],
       },
-      ccl: {
+      bolsa: {
         compra: aux[6],
         venta: aux[7],
       },
+      ccl: {
+        compra: aux[8],
+        venta: aux[9],
+      },
       solidario: {
-        venta: aux[8],
+        venta: aux[10],
       },
       hora_refresh: data_hora,
     };
