@@ -34,5 +34,14 @@ Contactar <br>
 
 <hr>
 
+![gif_comandos](https://media.giphy.com/media/SYeFoPhcXJC2KlUNWU/giphy.gif)
+![gif_tickers](https://media.giphy.com/media/MSvh4PJf64tWCOejN4/giphy.gif)
+![gif_ticker](https://media.giphy.com/media/t1mmLAN7DIvk2gtLwy/giphy.gif)
+![gif_FOREX](https://media.giphy.com/media/Dc1Qn6WTBcRyxwYlEm/giphy.gif)
+![gif_graf_line](https://media.giphy.com/media/UH3mbHp9BGSMhR6yL9/giphy.gif)
+![gif_graf_candle](https://media.giphy.com/media/NHlZZup7IQUgh2MSyE/giphy.gif)
+![gif_opciones](https://media.giphy.com/media/cP0NEuLtmS9i1mmqaJ/giphy.gif)
+![gif_dolar_btc](https://media.giphy.com/media/d8o5QhHeklJkfm6rNE/giphy.gif)
+
 [![mercadopago](https://img.shields.io/badge/Donar-MercadoPago-green)](https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=83617641-ae4ea1f1-0674-4ddb-bde5-227c20187147)
 [![Donar](https://img.shields.io/badge/Donar-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WQWFXA3P3NP8E&currency_code=USD&source=url)
